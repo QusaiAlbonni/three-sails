@@ -3,7 +3,7 @@ import BoxBehavior from './scripts/boxScript';
 import { EffectComposer, BloomEffect, EffectPass, FXAAEffect } from "postprocessing";
 import { Sky } from 'three/addons/objects/Sky.js';
 import SkyBehavior from './scripts/sky';
-
+import NewScript from './scripts/newScript'
 
 const renderer = new THREE.WebGLRenderer({powerPreference:"high-performance"});
 const mainScene = new THREE.Scene();
@@ -99,9 +99,27 @@ const skyEntity = {
     }
 }
 
+const me= new THREE.Mesh();
+const exampleBoxEntity = {
+    c:{
+        meshFilter:{
+            type: 'MeshFilter',
+            mesh: me,
+            scene: mainScene,
+        },
+        script: {
+            type: 'Script',
+            script: new NewScript()
+        },
+        transform:{
+            type: 'Transform',
+            obj: me
+        }
+        
+    }
+}
 
-
-const entities = [gameRenderEntity, boxEntity, cameraEntity, postProcessingEntity, skyEntity]
+const entities = [gameRenderEntity, boxEntity, cameraEntity, postProcessingEntity, skyEntity, exampleBoxEntity]
 
 export {
     entities
