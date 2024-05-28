@@ -13,7 +13,7 @@ class Game {
 
     }
     start() {
-        this.gameWorld = new GameWorld();
+        this.gameWorld = new GameWorld(this.clock);
         this.gameWorld.init();
         if(this.animationId === null){
             this.update(this.clock.getElapsedTime())

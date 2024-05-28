@@ -3,7 +3,8 @@ import { RenderPass } from 'postprocessing';
 import Stats from 'three/examples/jsm/libs/stats.module';
 
 class RenderSystem extends System {
-    init() {
+    init(clock) {
+        this.clock = clock;
         this.meshQuery = this.createQuery().fromAll('MeshFilter').persist();
         this.mainCameraQuery = this.createQuery().fromAll('MainCamera', 'CameraComponent').persist();
         this.renderOptionsQuery = this.createQuery().fromAll('GameRender');

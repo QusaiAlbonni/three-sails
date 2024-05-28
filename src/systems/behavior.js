@@ -1,8 +1,9 @@
 import { System } from "ape-ecs";
 
 class BehaviorSystem extends System {
-    init() {
+    init(clock) {
         this.scriptsQuery = this.world.createQuery().fromAll('Script').persist();
+        this.clock = clock;
     }
 
     update(currentTick) {
@@ -28,7 +29,7 @@ class BehaviorSystem extends System {
             let scriptComponents = scriptEntity.getComponents('Script');
             scriptComponents.forEach(scriptComponent => {
                 try {
-                    scriptComponent.script.update();
+                    scriptComponent.script.update(this.clock.getElapsedTime());
                 }
                 catch (e) {
                     console.error(e);

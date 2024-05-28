@@ -4,9 +4,10 @@ import { entities } from "./entities";
 import systems from "./systems/systems";
 
 class GameWorld {
-    constructor(){
+    constructor(clock){
         this._world = new WorldManager({
             world: new World(),
+            clock: clock
         }) 
     }
 
@@ -26,11 +27,12 @@ class GameWorld {
 class WorldManager {
     constructor(options){
         this.world = options.world;
+        this.clock = options.clock;
     }
 
     registerSystems(systems){
         for (let index = 0; index < systems.length; index++) {
-            this.world.registerSystem('mainSystems', systems[index]);
+            this.world.registerSystem('mainSystems', systems[index], [this.clock]);
         }
     }
 
