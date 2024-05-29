@@ -92,6 +92,7 @@ class RenderSystem extends System {
 
     };
 
+
 };
 
 export default RenderSystem;

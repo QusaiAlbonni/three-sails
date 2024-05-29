@@ -3,10 +3,11 @@ import GameWorld from "./world";
 
 class Game {
     constructor(options){
-        this.options = {}
-        Object.assign(this.options, options)
+        this.options = options
+
+        this.options.fixedDeltaTime = 1 / this.options.tickRate
         
-        this.clock = new Clock();
+        this.clock = new Clock(false);
 
         this.update = this.update.bind(this);
         this.animationId = null
@@ -14,15 +15,15 @@ class Game {
     }
     start() {
         this.gameWorld = new GameWorld(this.clock);
-        this.gameWorld.init();
+        this.gameWorld.init(this.options);
         if(this.animationId === null){
+            this.clock.start();
             this.update(this.clock.getElapsedTime())
         }
     }
     update(time){
         this.animationId = requestAnimationFrame(this.update.bind(this));
-        
-        this.gameWorld.update(time);
+        this.gameWorld.update();
     }
     stop(){
         if (this.animationId !== null){

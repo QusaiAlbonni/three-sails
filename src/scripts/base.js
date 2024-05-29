@@ -10,6 +10,10 @@ class Behavior {
 
     }
 
+    fixedUpdate(){
+
+    }
+    
     destroy() {
 
     }

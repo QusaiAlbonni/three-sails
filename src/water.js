@@ -216,7 +216,7 @@ class Water extends BatchedMesh {
         this.position.x = this.settings.objectToBeFollowed.position.x;
         this.position.y = this.settings.objectToBeFollowed.position.y;
         this.shader.uniforms.time.value = time * this.settings.timeDilation + this.settings.timeOffset;
-        this.material.bumpMap.offset.set(time * 0.01, time * 0.01);
+        this.material.bumpMap.offset.set(time * 0.01, time * 0.01).add(this.settings.directionBias);
         this._updateShader();
     }
 
@@ -390,7 +390,7 @@ class Water extends BatchedMesh {
                 dy += this._dWavedy(i, x, y);
             }
         }
-        const n = new THREE.Vector3(-dx, 0.5, -dy);
+        const n = new THREE.Vector3(-dx, 1.0, -dy);
         return n.normalize();
     }
 }

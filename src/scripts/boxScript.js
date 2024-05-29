@@ -3,11 +3,12 @@ import * as THREE from 'three'
 
 class BoxBehavior extends Behavior{
     start(){
-        this.transform.position.x = -3;
+        this.transform.position.x = -26
+        this.transform.position.y = 4;
     }
 
     update(){
-        this.transform.position.x +=0.01;
+        this.transform.position.x +=0.1;
     }
 }
 

@@ -140,6 +140,6 @@ vec3 waveNormal(float x, float y, int numOfWaves, float height) {
         dWavedy(i, x, y);
         #endif
     }
-    vec3 n = vec3(-dx, 0.5, -dy);
+    vec3 n = vec3(-dx, 1.0, -dy);
     return normalize(n);
 }
