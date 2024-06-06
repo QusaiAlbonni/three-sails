@@ -49,6 +49,7 @@ class Water extends BatchedMesh {
             waveLengths: [],
             speeds: [],
             directions: [],
+            chunkDropOffFactor: 2,
         }
         this.uniforms = {};
         this.textureLoader = new THREE.TextureLoader();
@@ -89,7 +90,7 @@ class Water extends BatchedMesh {
                 new THREE.Vector2(
                     Math.sin(dirSeed + Math.random() * this.settings.randomnessDirContribution),
                     Math.cos(dirSeed + Math.random() * this.settings.randomnessDirContribution)
-                ).add(this.settings.directionBias)
+                ).add(this.settings.directionBias).normalize()
             );
             dirSeed += this.settings.dirSeedIterator;
 
@@ -175,12 +176,12 @@ class Water extends BatchedMesh {
     generateChunkFactors(size) {
         let matrix = Array.from({ length: size }, () => Array(size).fill(0));
 
-        let numRings = Math.floor(size / 2);
-        if (size % 2 == 0) {
+        let numRings = Math.floor(size / this.settings.chunkDropOffFactor);
+        if (size % this.settings.chunkDropOffFactor == 0) {
             numRings--;
         }
         for (let ring = 0; ring <= numRings; ring++) {
-            let value = Math.pow(2, numRings - ring);
+            let value = Math.pow(this.settings.chunkDropOffFactor, numRings - ring);
 
             for (let i = ring; i < size - ring; i++) {
                 matrix[ring][i] = value;

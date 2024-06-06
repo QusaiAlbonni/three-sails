@@ -1,5 +1,4 @@
 import { System } from "ape-ecs";
-import { clamp } from "three/src/math/MathUtils.js";
 
 class BehaviorSystem extends System {
     init(clock, physicsClock) {
@@ -28,7 +27,6 @@ class BehaviorSystem extends System {
         })
 
         this.scriptEntities = this.scriptsQuery.refresh().execute();
-        this._fixedUpdate(this.scriptEntities);
 
 
 
@@ -47,27 +45,6 @@ class BehaviorSystem extends System {
 
 
     }
-    _fixedUpdate(entities) {
-        this.world.accumulatedPhyTime += this.world.deltaTime;
-        this.world.accumulatedPhyTime = clamp(this.world.accumulatedPhyTime, 0, this.world.maxTickTime)
-        while (this.world.accumulatedPhyTime >= this.world.fixedDeltaTime) {
-            entities.forEach(scriptEntity => {
-                let scriptComponents = scriptEntity.getComponents('Script');
-                scriptComponents.forEach(scriptComponent => {
-                    try {
-                        scriptComponent.script.fixedUpdate(this.clock.getElapsedTime(), this.world.fixedDeltaTime);
-                    }
-                    catch (e) {
-                        console.error(e);
-                        console.error('Your script generated an error it will not update');
-                    }
-                });
-            });
-
-            this.world.accumulatedPhyTime -= this.world.fixedDeltaTime;
-        }
-    }
-
 }
 
 export default BehaviorSystem;
