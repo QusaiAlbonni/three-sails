@@ -40,8 +40,14 @@ module.exports = {
         }),
     ],
     devServer: {
+        open:true,
         static: {
             directory: path.join(__dirname, 'dist'),
+        },
+        client:{
+            logging:'info',
+            reconnect:true,
+            overlay:true
         },
         compress: true,
         port: 9000,
