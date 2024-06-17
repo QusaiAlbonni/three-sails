@@ -45,8 +45,6 @@ module.exports = {
             directory: path.join(__dirname, 'dist'),
         },
         client:{
-            logging:'info',
-            reconnect:true,
             overlay:true
         },
         compress: true,
