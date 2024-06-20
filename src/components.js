@@ -61,12 +61,19 @@ class Script extends Component{
     }
 }
 
+class GUIcomponent extends Component{
+    static properties = {
+        list: Array(),
+    }
+}
+
 const components = [
     Transform,
     GameRender,
     MeshFilter,
     CameraComponent,
     PassComponent,
+    GUIcomponent,
     Script
 ];
 
@@ -83,5 +90,6 @@ export {
     GameRender,
     CameraComponent,
     PassComponent,
+    GUIcomponent,
     Script
 };

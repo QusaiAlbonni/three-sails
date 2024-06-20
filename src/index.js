@@ -1,7 +1,7 @@
 import Game from "./game";
 
 const options = {
-    tickRate: 50,
+    tickRate: 64,
     maxTickTime: 0.1
 }
 

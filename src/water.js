@@ -89,7 +89,7 @@ class Water extends BatchedMesh {
                 new THREE.Vector2(
                     Math.sin(dirSeed + Math.random() * this.settings.randomnessDirContribution),
                     Math.cos(dirSeed + Math.random() * this.settings.randomnessDirContribution)
-                ).add(this.settings.directionBias)
+                ).add(this.settings.directionBias).normalize()
             );
             dirSeed += this.settings.dirSeedIterator;
 
