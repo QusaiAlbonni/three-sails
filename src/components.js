@@ -1,6 +1,6 @@
 import { Component } from "ape-ecs";
 import { Effect, Pass, BloomEffect, EffectPass } from "postprocessing";
-import { Camera, Mesh, Object3D} from "three";
+import { Camera, Matrix3, Mesh, Object3D, Vector3} from "three";
 import Behavior from "./scripts/base";
 
 class Transform extends Component {
@@ -61,6 +61,36 @@ class Script extends Component{
     }
 }
 
+
+
+
+class RigidBody extends Component{
+    static properties = {
+        position: undefined,
+        rotation: undefined,
+        centreOfMass: new Vector3(),
+        inertiaTensor: new Matrix3(),
+        velocity: new Vector3(),
+        angularVelocity: new Vector3(),
+        mass: 0,
+        isKinematic: true,
+        totalForce: new Vector3(),
+        totalTorque: new Vector3(),
+
+        applyForce(force){
+            this.totalForce.add(force);
+        },
+
+        applyForceAtPosition(force, position){
+            this.totalForce.add(force);
+            this.totalTorque.add(new Vector3().crossVectors(position - this.position, force));
+        },
+
+    }
+};
+
+
+
 class GUIcomponent extends Component{
     static properties = {
         list: Array(),
@@ -74,7 +104,8 @@ const components = [
     CameraComponent,
     PassComponent,
     GUIcomponent,
-    Script
+    Script,
+    RigidBody
 ];
 
 const tags = [
