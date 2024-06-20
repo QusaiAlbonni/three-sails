@@ -2,16 +2,22 @@
     <meta charset="utf-8">
     <title>a7a</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- <link rel="stylesheet" href="src/"> -->
+    <link rel="stylesheet" href="src/style.css">
   </head>
-  <body>
+  <body style="margin: 0;padding: 0;">
    
    
-    <div class="windParent" >
+    <div class="windParent" style=" position: absolute;
+    bottom: 0;
+    left: 40px;" >
       <div class="wind">
         <canvas id="canvas" width="400" height="400"></canvas>
       </div>
-      <div id="angleDisplay">0°</div>
+      <div id="angleDisplay" style="  position: absolute;
+      color: white;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);">0°</div>
     </div>
   
   <!-- <script type="module" src="src/scripts/wind.js"></script> -->

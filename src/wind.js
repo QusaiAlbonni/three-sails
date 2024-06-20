@@ -10,7 +10,6 @@ console.log("asdasd");
 const radius = canvas.width / 2 - 10;
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
-import { camera } from "./script";
 let angle = 0;
 
 function drawCircle() {
