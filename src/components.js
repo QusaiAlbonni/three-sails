@@ -2,6 +2,8 @@ import { Component } from "ape-ecs";
 import { Effect, Pass, BloomEffect, EffectPass } from "postprocessing";
 import { Camera, Matrix3, Mesh, Object3D, Vector3} from "three";
 import Behavior from "./scripts/base";
+import RigidBody from "./rigidbody";
+import { BufferGeometry } from "three";
 
 class Transform extends Component {
     static properties = {
@@ -35,7 +37,7 @@ class GameRender extends Component{
 
 class CameraComponent extends Component{
     static properties = {
-        camera: new Camera()
+        camera: new Camera(),
     }
 };
 
@@ -60,34 +62,6 @@ class Script extends Component{
             this.script.destroy();
     }
 }
-
-
-
-
-class RigidBody extends Component{
-    static properties = {
-        position: undefined,
-        rotation: undefined,
-        centreOfMass: new Vector3(),
-        inertiaTensor: new Matrix3(),
-        velocity: new Vector3(),
-        angularVelocity: new Vector3(),
-        mass: 0,
-        isKinematic: true,
-        totalForce: new Vector3(),
-        totalTorque: new Vector3(),
-
-        applyForce(force){
-            this.totalForce.add(force);
-        },
-
-        applyForceAtPosition(force, position){
-            this.totalForce.add(force);
-            this.totalTorque.add(new Vector3().crossVectors(position - this.position, force));
-        },
-
-    }
-};
 
 
 

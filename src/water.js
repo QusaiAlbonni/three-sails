@@ -134,7 +134,7 @@ class Water extends BatchedMesh {
             specularColor: 0xff0000,
             transmission: 0,
             bumpMap: this.textureLoader.load(waternormals),
-            bumpScale: 0.6,
+            bumpScale: 0.4,
             defines: {
                 NUM_OF_WAVES: this.settings.numOfWaves,
                 WAVE_FUNCTION: this.settings.WAVE_FUNCTION,

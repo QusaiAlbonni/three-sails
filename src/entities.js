@@ -22,7 +22,8 @@ const gameRenderEntity = {
 };
 
 
-const geo = new THREE.BoxGeometry();
+const geo = new THREE.BoxGeometry(1, 1, 1);
+const nonIndexGeo = geo.toNonIndexed();
 const mat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const mesh = new THREE.Mesh(geo, mat);
 
@@ -40,6 +41,11 @@ const boxEntity = {
         script: {
             type: 'Script',
             script: new BoxBehavior()
+        },
+        rigidBody: {
+            type: 'RigidBody',
+            geometry: nonIndexGeo,
+            mass: 5
         }
     }
 };
@@ -49,7 +55,7 @@ const cameraEntity = {
     c: {
         camera: {
             type: 'CameraComponent',
-            camera: mainCamera
+            camera: mainCamera,
         },
         transform: {
             type: 'Transform',
@@ -105,7 +111,9 @@ const skyEntity = {
     }
 };
 
-const me = new THREE.Mesh();
+
+
+const me = new THREE.Mesh(nonIndexGeo, mat);
 const exampleBoxEntity = {
     c: {
         meshFilter: {
@@ -120,6 +128,11 @@ const exampleBoxEntity = {
         transform: {
             type: 'Transform',
             obj: me
+        },
+        rigidBody: {
+            type: 'RigidBody',
+            geometry: nonIndexGeo,
+            mass: 10
         }
 
     }
