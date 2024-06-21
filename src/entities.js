@@ -133,6 +133,8 @@ const skyEntity = {
 
 
 const me = new THREE.Mesh(nonIndexGeo, mat);
+nonIndexGeo.scale(10, 10, 10)
+
 const exampleBoxEntity = {
     c: {
         meshFilter: {
@@ -173,7 +175,7 @@ const exampleBoxEntity = {
         rigidBody: {
             type: 'RigidBody',
             geometry: nonIndexGeo,
-            mass: 10
+            mass: 55
         }
 
 

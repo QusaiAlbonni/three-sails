@@ -9,6 +9,7 @@ class BoxBehavior extends Behavior{
 
     fixedUpdate(){
         this.body.addForce(new THREE.Vector3(1.0, 0, 0))
+        this.body.addForce(new THREE.Vector3(10.0, 0, 0))
         
     }
     get body(){

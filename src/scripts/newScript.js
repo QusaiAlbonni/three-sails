@@ -14,7 +14,10 @@ class NewScript extends Behavior {
 
     }
     fixedUpdate(time, dt) {
-        this.rigidbody.addForceAtPosition(new THREE.Vector3(0.0, 0.0, 1.0), new THREE.Vector3(1.0, 8.0, 0.0))
+        this.rigidbody.addForceAtPosition(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 8, 0))
+        this.rigidbody.addForceAtPosition(new THREE.Vector3(55, 0, -31.5), new THREE.Vector3(0, 1, 0))
+        this.rigidbody.addForceAtPosition(new THREE.Vector3(0, 0, -10.1), new THREE.Vector3(0, 8, 4))
+        this.rigidbody.addForceAtPosition(new THREE.Vector3(0, 0, 10.5), new THREE.Vector3(0, 8, -21))
     }
     get rigidbody() {
         return this.entity.c.rigidBody;

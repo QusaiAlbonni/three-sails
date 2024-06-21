@@ -6,7 +6,6 @@ canvas.style.backgroundColor = "black";
 canvas.style.borderRadius = "50%";
 canvas.width = 100;
 canvas.height = 100;
-console.log("asdasd");
 const radius = canvas.width / 2 - 10;
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
@@ -17,13 +16,13 @@ function drawCircle() {
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
   ctx.strokeStyle = "#ff8800";
-  ctx.lineWidth = 3; // تقليل سمك الخط ليناسب الحجم الجديد
+  ctx.lineWidth = 3;
   ctx.stroke();
 
   const handleX = centerX + radius * Math.cos(angle);
   const handleY = centerY + radius * Math.sin(angle);
   ctx.beginPath();
-  ctx.arc(handleX, handleY, 5, 0, 2 * Math.PI); // تقليل حجم النقطة
+  ctx.arc(handleX, handleY, 5, 0, 2 * Math.PI); 
   ctx.fillStyle = "#ff8800";
   ctx.fill();
 }
@@ -67,9 +66,8 @@ canvas.addEventListener("mousedown", function (event) {
 function updateAngleDisplay() {
   const degrees = (angle * (180 / Math.PI) + 360) % 360;
   let finalAngle = 360 - degrees;
-  console.log(finalAngle);
   angleDisplay.innerText = `${finalAngle.toFixed(2)}°`;
 }
 
 drawCircle();
-// export default wind;
+

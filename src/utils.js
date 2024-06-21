@@ -10,23 +10,26 @@ function crossMatrix(vector) {
     return Omega
 }
 function reorthogonalize(matrix) {
-    // Extract columns of the matrix
-    const xAxis = new THREE.Vector3(matrix.elements[0], matrix.elements[1], matrix.elements[2]);
-    const yAxis = new THREE.Vector3(matrix.elements[4], matrix.elements[5], matrix.elements[6]);
-    const zAxis = new THREE.Vector3(matrix.elements[8], matrix.elements[9], matrix.elements[10]);
+    const m = matrix.elements;
 
-    // Perform Gram-Schmidt process
-    xAxis.normalize();
-    yAxis.sub(xAxis.clone().multiplyScalar(xAxis.dot(yAxis))).normalize();
-    zAxis.crossVectors(xAxis, yAxis).normalize();
+    const x = new THREE.Vector3(m[0], m[1], m[2]);
+    const y = new THREE.Vector3(m[3], m[4], m[5]);
+    const z = new THREE.Vector3(m[6], m[7], m[8]);
 
-    // Set the orthogonalized columns back to the matrix
-    matrix.set(
-        xAxis.x, yAxis.x, zAxis.x, 0,
-        xAxis.y, yAxis.y, zAxis.y, 0,
-        xAxis.z, yAxis.z, zAxis.z, 0,
-        0, 0, 0, 1
-    );
+    x.normalize();
+
+    y.sub(x.clone().multiplyScalar(x.dot(y)));
+    y.normalize();
+
+    z.sub(x.clone().multiplyScalar(x.dot(z)));
+    z.sub(y.clone().multiplyScalar(y.dot(z)));
+    z.normalize();
+
+    m[0] = x.x; m[1] = x.y; m[2] = x.z;
+    m[3] = y.x; m[4] = y.y; m[5] = y.z;
+    m[6] = z.x; m[7] = z.y; m[8] = z.z;
+
+    matrix.elements = m;
 }
 
 export { crossMatrix, reorthogonalize };

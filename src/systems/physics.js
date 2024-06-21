@@ -3,7 +3,7 @@ import { clamp } from "three/src/math/MathUtils.js";
 import * as THREE from 'three'
 import RigidBody from "../rigidbody";
 import { RigidBodyArithmaticError, RigidBodyDataError } from "../exceptions";
-import { crossMatrix} from "../utils";
+import { crossMatrix, reorthogonalize } from "../utils";
 class PhysicsSystem extends System {
     init(clock, physicsClock) {
         this.scriptsQuery = this.world.createQuery().fromAll('Script').persist();
@@ -141,6 +141,7 @@ class PhysicsSystem extends System {
     updateBodyAngularVelocity(body, dt) {
         body._L.add(body.totalTorque.clone().multiplyScalar(dt));
         let rotation = new THREE.Matrix3().setFromMatrix4(new THREE.Matrix4().makeRotationFromQuaternion(body.rotation));
+        reorthogonalize(rotation)
         let RI = new THREE.Matrix3();
         RI.multiplyMatrices(rotation, body.initialInertiaTensor.clone().invert());
         let RTranspose = rotation.clone().transpose();
@@ -159,6 +160,7 @@ class PhysicsSystem extends System {
         for (let index = 0; index < rotation.elements.length; index++) {
             rotation.elements[index] += CRR.elements[index];
         }
+        reorthogonalize(rotation)
         let mat4 = new THREE.Matrix4().setFromMatrix3(rotation);
 
         body.rotation.setFromRotationMatrix(mat4)

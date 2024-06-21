@@ -39,9 +39,16 @@ class RigidBody extends Component {
         if (force.length() < 1e-8) {
             return
         }
-        let arm = position.clone().sub(this.position);
         this.totalForce.add(force);
-        this.totalTorque.add(new Vector3().crossVectors(arm, force));
+
+        let arm = position.clone().sub(this.position.clone());
+        let torque = new Vector3().crossVectors(arm, force)
+        
+        if (torque.length() < 1e-8) {
+            return
+        }
+        this.totalTorque.add(torque);
+        
     } 
 }
 
