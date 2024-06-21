@@ -7,8 +7,12 @@ class BoxBehavior extends Behavior{
         this.transform.position.y = 4;
     }
 
-    update(){
-        this.transform.position.x +=0.1;
+    fixedUpdate(){
+        this.body.addForce(new THREE.Vector3(1.0, 0, 0))
+        
+    }
+    get body(){
+        return this.entity.c.rigidBody;
     }
 }
 

@@ -40,44 +40,51 @@ const gameRenderEntity = {
   },
 };
 
-const geo = new THREE.BoxGeometry();
+
+const geo = new THREE.BoxGeometry(1, 1, 1);
+const nonIndexGeo = geo.toNonIndexed();
 const mat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const mesh = new THREE.Mesh(geo, mat);
 
 const boxEntity = {
-  c: {
-    meshFilter: {
-      type: "MeshFilter",
-      mesh: mesh,
-      scene: mainScene,
-    },
-    transform: {
-      type: "Transform",
-      obj: mesh,
-    },
-    script: {
-      type: "Script",
-      script: new BoxBehavior(),
-    },
-  },
+    c: {
+        meshFilter: {
+            type: 'MeshFilter',
+            mesh: mesh,
+            scene: mainScene
+        },
+        transform: {
+            type: 'Transform',
+            obj: mesh
+        },
+        script: {
+            type: 'Script',
+            script: new BoxBehavior()
+        },
+        rigidBody: {
+            type: 'RigidBody',
+            geometry: nonIndexGeo,
+            mass: 5
+        }
+    }
 };
 
 const cameraEntity = {
-  tags: ["MainCamera"],
-  c: {
-    camera: {
-      type: "CameraComponent",
-      camera: mainCamera,
-    },
-    transform: {
-      type: "Transform",
-      obj: mainCamera,
-    },
-    script: {
-      type: "Script",
-      script: new CameraBehavior(),
-    },
-  },
+    tags: ['MainCamera'],
+    c: {
+        camera: {
+            type: 'CameraComponent',
+            camera: mainCamera,
+        },
+        transform: {
+            type: 'Transform',
+            obj: mainCamera
+        },
+        script: {
+            type: 'Script',
+            script: new CameraBehavior()
+        }
+    }
 };
 
 const bloomEffect = new BloomEffect({ intensity: 0.0 });
@@ -123,7 +130,9 @@ const skyEntity = {
   },
 };
 
-const me = new THREE.Mesh();
+
+
+const me = new THREE.Mesh(nonIndexGeo, mat);
 const exampleBoxEntity = {
   c: {
     meshFilter: {
@@ -152,9 +161,21 @@ const exampleBoxEntity = {
           step: 0.1,
           name: "X-Axis",
         },
-      ],
-    },
-  },
+        script: {
+            type: 'Script',
+            script: new NewScript()
+        },
+        transform: {
+            type: 'Transform',
+            obj: me
+        },
+        rigidBody: {
+            type: 'RigidBody',
+            geometry: nonIndexGeo,
+            mass: 10
+        }
+
+    }
 };
 
 const water = new Water(65, 4000000, 14000000);
