@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import RigidBody from "../rigidbody";
 import { RigidBodyArithmaticError, RigidBodyDataError } from "../exceptions";
 import { crossMatrix, reorthogonalize } from "../utils";
+
 class PhysicsSystem extends System {
     init(clock, physicsClock) {
         this.scriptsQuery = this.world.createQuery().fromAll('Script').persist();
@@ -132,8 +133,8 @@ class PhysicsSystem extends System {
         /**
          * @type {THREE.Vector3}
          */
-        let acceleration = body.totalForce.clone().divideScalar(body.mass)
-        body.velocity.add(acceleration.clone().multiplyScalar(dt))
+        let acceleration = body.totalForce.clone().divideScalar(body.mass).add(this.world.gravity);
+        body.velocity.add(acceleration.clone().multiplyScalar(dt));
         this.updateBodyPosition(body, dt);
 
     }
@@ -143,7 +144,7 @@ class PhysicsSystem extends System {
         let rotation = new THREE.Matrix3().setFromMatrix4(new THREE.Matrix4().makeRotationFromQuaternion(body.rotation));
         reorthogonalize(rotation)
         let RI = new THREE.Matrix3();
-        RI.multiplyMatrices(rotation, body.initialInertiaTensor.clone().invert());
+        RI.multiplyMatrices(rotation, body.initialInvInertia);
         let RTranspose = rotation.clone().transpose();
         let RIRt = new THREE.Matrix3();
         RIRt.multiplyMatrices(RI, RTranspose);

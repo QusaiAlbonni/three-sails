@@ -162,7 +162,8 @@ const exampleBoxEntity = {
                     min: -3,
                     step: 0.1,
                     name: "X-Axis",
-                }]
+                }
+            ]
         },
         script: {
             type: 'Script',
