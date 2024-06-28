@@ -22,19 +22,35 @@ module.exports = {
                 use: ['style-loader', 'css-loader'],
             },
             {
-                test: /\.(png|jpe?g|gif|svg)$/i,
+                test: /\.(png|jpe?g|gif|svg|bin)$/i,
                 use: [
                     {
                         loader: 'file-loader',
                         options: {
                             name: '[path][name].[ext]',
+                            outputPath: 'assets/models/textures/',
+                            publicPath: 'assets/models/textures/',
                         },
+
                     },
                 ],
             },
             {
                 test: /\.(txt|frag|vert)$/i,
                 use: 'raw-loader',
+            },
+            {
+                test: /\.(glb|gltf|fbx)$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[path][name].[ext]',
+                            outputPath: 'assets/models/',
+                            publicPath: 'assets/models/',
+                        },
+                    },
+                ],
             },
         ],
     },
