@@ -66,6 +66,42 @@ const boxEntity = {
             geometry: nonIndexGeo,
             mass: 5
         }
+        ,
+        gui: {
+            type: "GUIcomponent",
+            list: [
+                {
+                    path: ["BoxPosition"],
+                    guiType: "vector",
+                    target: mesh.position,
+                    max: {
+                        x: 10,
+                        y: 20,
+                        z: 30,
+                    },
+                    min: {
+                        x: -10,
+                        y: -20,
+                        z: -30,
+                    },
+                    step: {
+                        x: 1,
+                        y: 1,
+                        z: 1,
+                    },
+                    name: {
+                        x: "X",
+                        y: "Y",
+                        z: "Z",
+                    },
+                    onchange: {
+                        x: () => { console.log("x") },
+                        y: () => { console.log("y") },
+                        z: () => { console.log("z") },
+                    }
+                }
+            ]
+        }
     }
 };
 
@@ -186,54 +222,21 @@ const exampleBoxEntity = {
 
 const water = new Water(65, 4000000, 14000000);
 const waterEntity = {
-  c: {
-    meshFilter: {
-      type: "MeshFilter",
-      mesh: water,
-      scene: mainScene,
-    },
-    transform: {
-      type: "Transform",
-      obj: water,
-    },
-    script: {
-      type: "Script",
-      script: new WaterBehavior(),
-    },
-    gui: {
-      type: "GUIcomponent",
-      list: [
-        {
-          path: ["color"],
-          guiType: "vector",
-          target: mesh.position,
-          max: {
-            x: 10,
-            y: 20,
-            z: 30,
-          },
-          min: {
-            x: -10,
-            y: -20,
-            z: -30,
-          },
-          step: {
-            x: 1,
-            y: 1,
-            z: 1,
-          },
-          name: {
-            x: "X",
-            y: "Y",
-            z: "Z",
-          },
-          onchange:{
-            x:()=>{console.log("x")},
-            y:()=>{console.log("y")},
-            z:()=>{console.log("z")},
-          }
+    c: {
+        meshFilter: {
+            type: "MeshFilter",
+            mesh: water,
+            scene: mainScene,
         },
-    },
+        transform: {
+            type: "Transform",
+            obj: water,
+        },
+        script: {
+            type: "Script",
+            script: new WaterBehavior(),
+        }
+    }
 };
 
 const entities = [
