@@ -177,14 +177,34 @@ const waterEntity = {
       type: "GUIcomponent",
       list: [
         {
-          path: ["box", "color", "ammis"],
-          guiType: "slider",
-          properityName: "x",
+          path: ["color"],
+          guiType: "vector",
           target: mesh.position,
-          max: 3,
-          min: -3,
-          step: 0.1,
-          name: "X-Axis",
+          max: {
+            x: 10,
+            y: 20,
+            z: 30,
+          },
+          min: {
+            x: -10,
+            y: -20,
+            z: -30,
+          },
+          step: {
+            x: 1,
+            y: 1,
+            z: 1,
+          },
+          name: {
+            x: "X",
+            y: "Y",
+            z: "Z",
+          },
+          onchange:{
+            x:()=>{console.log("x")},
+            y:()=>{console.log("y")},
+            z:()=>{console.log("z")},
+          }
         },
       ],
     },
