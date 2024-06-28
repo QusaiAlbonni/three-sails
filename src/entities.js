@@ -49,26 +49,62 @@ const mat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const mesh = new THREE.Mesh(geo, mat);
 
 const boxEntity = {
-  c: {
-    meshFilter: {
-      type: "MeshFilter",
-      mesh: mesh,
-      scene: mainScene,
-    },
-    transform: {
-      type: "Transform",
-      obj: mesh,
-    },
-    script: {
-      type: "Script",
-      script: new BoxBehavior(),
-    },
-    rigidBody: {
-      type: "RigidBody",
-      geometry: nonIndexGeo,
-      mass: 5,
-    },
-  },
+    c: {
+        meshFilter: {
+            type: 'MeshFilter',
+            mesh: mesh,
+            scene: mainScene
+        },
+        transform: {
+            type: 'Transform',
+            obj: mesh
+        },
+        script: {
+            type: 'Script',
+            script: new BoxBehavior()
+        },
+        rigidBody: {
+            type: 'RigidBody',
+            geometry: nonIndexGeo,
+            mass: 5
+        }
+        ,
+        gui: {
+            type: "GUIcomponent",
+            list: [
+                {
+                    path: ["BoxPosition"],
+                    guiType: "vector",
+                    target: mesh.position,
+                    max: {
+                        x: 10,
+                        y: 20,
+                        z: 30,
+                    },
+                    min: {
+                        x: -10,
+                        y: -20,
+                        z: -30,
+                    },
+                    step: {
+                        x: 1,
+                        y: 1,
+                        z: 1,
+                    },
+                    name: {
+                        x: "X",
+                        y: "Y",
+                        z: "Z",
+                    },
+                    onchange: {
+                        x: () => { console.log("x") },
+                        y: () => { console.log("y") },
+                        z: () => { console.log("z") },
+                    }
+                }
+            ]
+        }
+    }
 };
 
 const cameraEntity = {
@@ -183,36 +219,21 @@ const exampleBoxEntity = {
 
 const water = new Water(65, 4000000, 14000000);
 const waterEntity = {
-  c: {
-    meshFilter: {
-      type: "MeshFilter",
-      mesh: water,
-      scene: mainScene,
-    },
-    transform: {
-      type: "Transform",
-      obj: water,
-    },
-    script: {
-      type: "Script",
-      script: new WaterBehavior(),
-    },
-    gui: {
-      type: "GUIcomponent",
-      list: [
-        {
-          path: ["box", "color", "ammis"],
-          guiType: "slider",
-          properityName: "x",
-          target: mesh.position,
-          max: 3,
-          min: -3,
-          step: 0.1,
-          name: "X-Axis",
+    c: {
+        meshFilter: {
+            type: "MeshFilter",
+            mesh: water,
+            scene: mainScene,
         },
-      ],
-    },
-  },
+        transform: {
+            type: "Transform",
+            obj: water,
+        },
+        script: {
+            type: "Script",
+            script: new WaterBehavior(),
+        }
+    }
 };
 
 const model = await loadModel(boatModel,{x:3,y:3,z:3},{x:0,y:10,z:0});

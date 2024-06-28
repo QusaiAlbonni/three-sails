@@ -1,6 +1,6 @@
 import Behavior from "./base";
 import * as THREE from 'three'
-import path from '../StandardCubeMap.png';
+import path from '../../assets/textures/StandardCubeMap.png';
 class SkyBehavior extends Behavior {
     start() {
         const sunpos = new THREE.Vector3();
