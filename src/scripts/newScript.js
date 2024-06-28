@@ -3,16 +3,20 @@ import * as THREE from 'three'
 
 class NewScript extends Behavior {
     start() {
-        this.transform.position.x = -26
-        this.transform.position.y = 8
+        this.transform.position.y = 10
         const geo = new THREE.BoxGeometry();
         const mat = new THREE.MeshPhongMaterial({ color: 0x0000ff });
         this.mesh.material = mat;
-        this.mesh.geometry = geo;
+
+
     }
     fixedUpdate(time, dt) {
-        this.transform.position.x += 0.1;
+        this.rigidbody.addForceAtPosition(new THREE.Vector3(1.2, 0, -31.5), new THREE.Vector3(0, 1, 0))
     }
+    get rigidbody() {
+        return this.entity.c.rigidBody;
+    }
+    
 }
 
 export default NewScript;

@@ -19,3 +19,7 @@ npm run dev
 ```sh
 npm run build
 ```
+you can run personal test code you write in personal.js with
+```sh
+npm run personal
+```

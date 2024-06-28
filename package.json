@@ -6,16 +6,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "dev": "webpack serve"
+    "dev": "webpack serve",
+    "personal": "cross-env PERSONAL=true webpack serve"
   },
   "keywords": [],
   "author": "Qusai Albonni",
   "license": "MIT",
   "devDependencies": {
     "clean-webpack-plugin": "^4.0.0",
+    "cross-env": "^7.0.3",
     "css-loader": "^7.1.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.6.0",
+    "numericjs": "^1.2.6",
     "raw-loader": "^4.0.2",
     "style-loader": "^4.0.0",
     "webpack": "^5.91.0",
