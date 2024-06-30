@@ -21,6 +21,7 @@ class RigidBody extends Component {
         rotation: undefined,
         mass: 0,
         isKinematic: true,
+        affectedByGravity: true
     }
 
 
@@ -38,15 +39,27 @@ class RigidBody extends Component {
      * @returns 
      */
     addForceAtPosition(force, position) {
-        if (force.length() < 1e-8) {
+        if (force.length() < 1e-8)
             return
-        }
         this.totalForce.add(force);
         let arm = position.clone().sub(this.position.clone());
         let torque = new Vector3().crossVectors(arm, force)
-        if (torque.length() < 1e-8) {
+        if (torque.length() < 1e-8)
             return
-        }
+        this.totalTorque.add(torque);
+    }
+    addTorqueFromForce(force, position) {
+        if (force.length() < 1e-8)
+            return
+        let arm = position.clone().sub(this.position.clone());
+        let torque = new Vector3().crossVectors(arm, force)
+        if (torque.length() < 1e-8)
+            return
+        this.totalTorque.add(torque);
+    }
+    addTorque(torque){
+        if(torque.length() < 1e-8)
+            return
         this.totalTorque.add(torque);
     }
 }

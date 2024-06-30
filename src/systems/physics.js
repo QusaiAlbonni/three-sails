@@ -133,7 +133,10 @@ class PhysicsSystem extends System {
         /**
          * @type {THREE.Vector3}
          */
-        let acceleration = body.totalForce.clone().divideScalar(body.mass).add(this.world.gravity);
+        let acceleration = body.totalForce.clone().divideScalar(body.mass);
+        if(body.affectedByGravity){
+            acceleration.add(this.world.gravity)
+        }
         body.velocity.add(acceleration.clone().multiplyScalar(dt));
         this.updateBodyPosition(body, dt);
 
@@ -148,7 +151,8 @@ class PhysicsSystem extends System {
         let RTranspose = rotation.clone().transpose();
         let RIRt = new THREE.Matrix3();
         RIRt.multiplyMatrices(RI, RTranspose);
-        body.inertiaTensor.copy(RIRt);
+        body.invInertia.copy(RIRt);
+        body.inertiaTensor.copy(body.invInertia.clone().invert())
         let omega = new THREE.Vector3();
         omega.copy(body._L).applyMatrix3(RIRt);
         body.angularVelocity.copy(omega);
