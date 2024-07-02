@@ -75,7 +75,7 @@ const components = [
   RigidBody,
 ];
 
-const tags = ["MainCamera", "MainGameRender"];
+const tags = ["MainCamera", "MainGameRender","objectToBeFollowed","Follower"];
 
 export {
   components,
