@@ -110,6 +110,7 @@ const boxEntity = {
 const cameraEntity = {
   tags: ["MainCamera"],
   c: {
+    
     camera: {
       type: "CameraComponent",
       camera: mainCamera,
@@ -124,6 +125,7 @@ const cameraEntity = {
     },
   },
 };
+
 
 const bloomEffect = new BloomEffect({ intensity: 0.0 });
 const bloomPass = new EffectPass(mainCamera, bloomEffect);
@@ -237,8 +239,8 @@ const waterEntity = {
 };
 
 const model = await loadModel(boatModel,{x:3,y:3,z:3},{x:0,y:10,z:0});
-console.log(model);
 const boatEntity = {
+  tags: ["objectToBeFollowed"],
   c: {
     meshFilter: {
       type: "MeshFilter",
@@ -249,6 +251,7 @@ const boatEntity = {
       type: "Transform",
       obj: model,
     },
+    
     // rigidBody: {
     //   type: "RigidBody",
     //   geometry: nonIndexGeo,
@@ -260,6 +263,27 @@ const boatEntity = {
     // },
   },
 };
+
+const basicMesh = new THREE.Mesh(geo, mat);
+basicMesh.position.set(0,10,0);
+mainCamera.position.x=basicMesh.position.x;
+mainCamera.position.z=basicMesh.position.z+30;
+mainCamera.position.y=basicMesh.position.y+15;
+const invisibleMeshEntitiy={
+  tags: ["Follower"],
+  c:{
+    /* meshFilter: {
+      type: "MeshFilter",
+      mesh: basicMesh,
+      scene:mainScene,
+    }, */
+    transform: {
+      type: "Transform",
+      obj: basicMesh,
+    }
+  }
+}
+
 const entities = [
   gameRenderEntity,
   boxEntity,
@@ -269,6 +293,7 @@ const entities = [
   exampleBoxEntity,
   waterEntity,
   boatEntity,
+  invisibleMeshEntitiy,
 ];
 
 export { entities };
