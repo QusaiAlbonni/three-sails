@@ -24,9 +24,9 @@ class InputSystem extends System {
         this.movement = -0.3;
         this.movementk = 0;
         this.rot = 0;
-        this.rotk = 0.05 ;
-        this.freelock = false;
-        this.ppress = false;
+        this.rotk = 0.05;
+        this.freelock = true;
+        this.ppress = true;
 
         this.keyboard = [];
         window.addEventListener('keydown', (event) => {
@@ -39,87 +39,85 @@ class InputSystem extends System {
             if (event.key == 'p') {
                 this.ppress = !this.ppress;
             }
-            if(event.key=='f'){
-                this.freelock=!this.freelock;
+            if (event.key == 'f') {
+                this.freelock = !this.freelock;
             }
         })
 
     }
     update() {
-        if(this.movementMouse == 0){
+        if (this.movementMouse == 0) {
             this.mousing();
         }
         this._processKeyboard();
         this._pressKeyboard();
     }
     _processKeyboard() {
-       if(this.ppress){
-        if (this.keyboard['d']) {
-            this.rot = -0.01;
+        if (this.ppress) {
+            if (this.keyboard['d']) {
+                this.rot = -0.01;
+            }
+            else if (this.keyboard['a']) {
+                this.rot = 0.01;
+            }
+            else {
+                this.rot = 0;
+            }
+        } if (this.freelock) {
+            if (this.keyboard['w']) {
+                this.movementk = -1;
+            }
+            else if (this.keyboard['s']) {
+                this.movementk = 1;
+            }
+            else {
+                this.movementk = 0;
+            }
         }
-        else if (this.keyboard['a']) {
-            this.rot = 0.01;
-        }
-        else {
-            this.rot = 0;
-        }
-       }if(this.freelock){
-        if(this.keyboard['w']){
-            this.movementk = -1 ;
-        }
-       else if(this.keyboard['s']) {
-            this.movementk = 1 ;}
-        else {
-            this.movementk=0;
-        }
-       }
     }
     mousing() {
         window.addEventListener('mousemove', (event) => {
-            this.movementMouse = 1 ;
+            this.movementMouse = 1;
             this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             this.mouse.y = (event.clientY / window.innerHeight) * 2 - 1;
-            if(this.freelock){
+            if (this.freelock) {
                 this.freelock = true;
             }
             this.prevMouse.x = this.mouse.x;
             this.prevMouse.y = this.mouse.y;
         });
-        
+
     }
-    _pressKeyboard(){
-        if(this.ppress){
-            this.boat.rotation.y += this.rot ;
-            const  directionp  =  new  THREE.Vector3(0,  0,  1);directionp.applyAxisAngle(new  THREE.Vector3(0,  1,  0),  this.boat.rotation.y);  
-            this.boat.position.addScaledVector(directionp,  this.movement);  
-            // basic movment
+    _pressKeyboard() {
+        if (this.ppress) {
+            const directionp = new THREE.Vector3(0, 0, 1); directionp.applyAxisAngle(new THREE.Vector3(0, 1, 0), this.boat.rotation.y);
             this.invisibleFollower.position.copy(this.boat.position);
             this.invisibleFollower.rotation.copy(this.boat.rotation);
-            this.camera.position.y = this.invisibleFollower.position.y+15;
-                const distancep = 30; 
+            this.camera.position.y = this.invisibleFollower.position.y + 15;
+            const distancep = 30;
+            const sphereXp = this.invisibleFollower.position.x + distancep * Math.sin(this.invisibleFollower.rotation.y);
+            const sphereZp = this.invisibleFollower.position.z + distancep * Math.cos(this.invisibleFollower.rotation.y);
+            this.camera.position.set(sphereXp, this.camera.position.y, sphereZp);
+            this.camera.lookAt(this.invisibleFollower.position);
+        }
+        if (this.freelock) {
+            if (this.freelock) {
+                this.invisibleFollower.rotation.y = - this.mouse.x * Math.PI;
+                this.invisibleFollower.rotation.x = this.mouse.y * 0.5 * Math.PI;
+
+                this.invisibleFollower.position.x += Math.sin(this.invisibleFollower.rotation.y) * this.movementk;
+                this.invisibleFollower.position.z += Math.cos(this.invisibleFollower.rotation.y) * this.movementk;
+                this.invisibleFollower.position.y += Math.sin(this.invisibleFollower.rotation.x) * this.movementk;
+                const distancep = 30;
                 const sphereXp = this.invisibleFollower.position.x + distancep * Math.sin(this.invisibleFollower.rotation.y);
                 const sphereZp = this.invisibleFollower.position.z + distancep * Math.cos(this.invisibleFollower.rotation.y);
-                this.camera.position.set(sphereXp, this.camera.position.y, sphereZp);
-                this.camera.lookAt(this.invisibleFollower.position);
-         }
-         if(this.freelock){
-           if(this.freelock){
-       this.invisibleFollower.rotation.y =- this.mouse.x * Math.PI;  
-       this.invisibleFollower.rotation.x = this.mouse.y *0.5* Math.PI; 
+                const sphereYp = this.invisibleFollower.position.y + distancep * Math.sin(this.invisibleFollower.rotation.x);
 
-       this.invisibleFollower.position.x += Math.sin(this.invisibleFollower.rotation.y) * this.movementk;
-       this.invisibleFollower.position.z += Math.cos(this.invisibleFollower.rotation.y) * this.movementk;
-       this.invisibleFollower.position.y += Math.sin(this.invisibleFollower.rotation.x) * this.movementk;
-       const distancep = 30;
-       const sphereXp = this.invisibleFollower.position.x + distancep * Math.sin(this.invisibleFollower.rotation.y);
-       const sphereZp = this.invisibleFollower.position.z + distancep * Math.cos(this.invisibleFollower.rotation.y);
-       const sphereYp = this.invisibleFollower.position.y + distancep * Math.sin(this.invisibleFollower.rotation.x);
-       
-       this.camera.position.set(sphereXp, sphereYp + 15, sphereZp);
-       this.camera.lookAt(this.invisibleFollower.position);
-           }
-         }
-   }
+                this.camera.position.set(sphereXp, sphereYp + 15, sphereZp);
+                this.camera.lookAt(this.invisibleFollower.position);
+            }
+        }
+    }
 }
 
 export default InputSystem;

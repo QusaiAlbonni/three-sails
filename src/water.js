@@ -132,7 +132,6 @@ class Water extends BatchedMesh {
             envMapIntensity: 1.0,
             specularIntensity: 0.5,
             specularColor: 0xffffff,
-            transmission: 0.5,
             bumpMap: this.textureLoader.load(waternormals),
             bumpScale: 0.2,
             defines: {
