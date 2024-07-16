@@ -1,5 +1,6 @@
 import { Component } from "ape-ecs";
 import { Vector3, Matrix3, BufferGeometry, BoxGeometry } from "three";
+import { EPSILON } from "./utils";
 
 class RigidBody extends Component {
     totalForce          = new Vector3();
@@ -21,12 +22,18 @@ class RigidBody extends Component {
         rotation: undefined,
         mass: 0,
         isKinematic: true,
-        affectedByGravity: true
+        affectedByGravity: true,
+        drag: 0,
+        angularDrag: 0
     }
 
 
+    get inertiaTensor(){
+        return this.invInertia.clone().invert()
+    }
+
     addForce(force) {
-        if (force.length() < 1e-8) {
+        if (force.length() < EPSILON) {
             return
         }
         this.totalForce.add(force);
@@ -39,26 +46,26 @@ class RigidBody extends Component {
      * @returns 
      */
     addForceAtPosition(force, position) {
-        if (force.length() < 1e-8)
+        if (force.length() < EPSILON)
             return
         this.totalForce.add(force);
         let arm = position.clone().sub(this.position.clone());
         let torque = new Vector3().crossVectors(arm, force)
-        if (torque.length() < 1e-8)
+        if (torque.length() < EPSILON)
             return
         this.totalTorque.add(torque);
     }
     addTorqueFromForce(force, position) {
-        if (force.length() < 1e-8)
+        if (force.length() < EPSILON)
             return
         let arm = position.clone().sub(this.position.clone());
         let torque = new Vector3().crossVectors(arm, force)
-        if (torque.length() < 1e-8)
+        if (torque.length() < EPSILON)
             return
         this.totalTorque.add(torque);
     }
     addTorque(torque){
-        if(torque.length() < 1e-8)
+        if(torque.length() < EPSILON)
             return
         this.totalTorque.add(torque);
     }

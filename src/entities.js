@@ -7,7 +7,7 @@ import {
 	SSAOEffect,
 } from "postprocessing";
 import { loadModel } from "./utils";
-import { loadFbxModel } from "./utils";
+import VoxelizedMesh from "./voxelizedmesh";
 import { Sky } from "three/addons/objects/Sky.js";
 import Water from "./water";
 import {
@@ -216,6 +216,9 @@ const exampleBoxEntity = {
 			type: "RigidBody",
 			geometry: nonIndexGeo,
 			mass: 55,
+			affectedByGravity: false,
+			drag: 0.5,
+			angularDrag:0.5
 		},
 	},
 };
@@ -242,6 +245,7 @@ const waterEntity = {
 const boat = await loadModel(boatModel);
 const phyBoat = await loadModel(phyBoatModel);
 var phyBoatIndGeo;
+var phyBoatVoxelMesh;
 phyBoat.traverse(function (child) {
 	if (child.isMesh) {
 		const geometry = child.geometry;
@@ -249,8 +253,12 @@ phyBoat.traverse(function (child) {
 		console.log(geometry);
 		console.log('Number of vertices:', geometry.attributes.position.count);
 		phyBoatIndGeo = geometry;
+		phyBoatVoxelMesh = child
 	}
 });
+const voxy = new VoxelizedMesh(phyBoatVoxelMesh, 0.4, 0.5, {x: 0.25, y:0.0, z:0.0}, new THREE.MeshLambertMaterial({color: 0x00ff00}))
+console.log(voxy.voxels.length);
+phyBoatVoxelMesh= voxy.voxelMesh
 const phyBoatNonIndGeo = phyBoatIndGeo.toNonIndexed()
 const boatEntity = {
 	tags: ["objectToBeFollowed"],

@@ -1,18 +1,15 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
+
+const EPSILON = 1e-8
+
 function crossMatrix(vector) {
 	var Omega = new THREE.Matrix3();
 	Omega.set(
-		0,
-		-vector.z,
-		vector.y,
-		vector.z,
-		0,
-		-vector.x,
-		-vector.y,
-		vector.x,
-		0
+		0, -vector.z, vector.y,
+		vector.z, 0, -vector.x,
+		-vector.y, vector.x, 0
 	);
 	return Omega;
 }
@@ -85,4 +82,11 @@ async function loadFbxModel(path, scale = { x: 1, y: 1, z: 1 }, position = { x: 
 		);
 	});
 }
-export { crossMatrix, reorthogonalize, loadModel, loadFbxModel };
+
+function isInsideMesh(pos, mesh) {
+	let rayCaster = new THREE.Raycaster();
+    rayCaster.set(pos, {x: 0, y: -1, z: 0});
+    let rayCasterIntersects = rayCaster.intersectObject(mesh, false);
+    return rayCasterIntersects.length % 2 === 1; 
+}
+export { crossMatrix, reorthogonalize, loadModel, loadFbxModel, isInsideMesh, EPSILON };

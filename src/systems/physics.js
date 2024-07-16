@@ -3,7 +3,7 @@ import { clamp } from "three/src/math/MathUtils.js";
 import * as THREE from 'three'
 import RigidBody from "../rigidbody";
 import { RigidBodyArithmaticError, RigidBodyDataError } from "../exceptions";
-import { crossMatrix, reorthogonalize } from "../utils";
+import { crossMatrix, reorthogonalize, EPSILON } from "../utils";
 
 class PhysicsSystem extends System {
     init(clock, physicsClock) {
@@ -129,6 +129,19 @@ class PhysicsSystem extends System {
         transform.quaternion.normalize();
     }
 
+    /**
+     * this is what unity uses, better approximation exist
+     * @param {RigidBody} body 
+     * @param {Number} dt 
+     * @returns {undefined}
+     */
+    updateBodyDrag(vel, drag, dt){
+        if(drag < EPSILON)
+            return;
+        vel.multiplyScalar(clamp(1 - dt * drag, 0, 1));
+    }
+
+
     updateBodyVelocity(body, dt) {
         /**
          * @type {THREE.Vector3}
@@ -138,36 +151,56 @@ class PhysicsSystem extends System {
             acceleration.add(this.world.gravity)
         }
         body.velocity.add(acceleration.clone().multiplyScalar(dt));
+        this.updateBodyDrag(body.velocity, body.drag, dt)
         this.updateBodyPosition(body, dt);
 
     }
 
+
+    // TODO: replace current solution with quaternion math
     updateBodyAngularVelocity(body, dt) {
-        body._L.add(body.totalTorque.clone().multiplyScalar(dt));
+
+        // current rotation of body in Matrix3 form
         let rotation = new THREE.Matrix3().setFromMatrix4(new THREE.Matrix4().makeRotationFromQuaternion(body.rotation));
-        reorthogonalize(rotation)
+        reorthogonalize(rotation);
+        
+        // current inverse inertia tensor of body I^-1 = Rotation * I0^-1 Rotation^T
         let RI = new THREE.Matrix3();
         RI.multiplyMatrices(rotation, body.initialInvInertia);
         let RTranspose = rotation.clone().transpose();
         let RIRt = new THREE.Matrix3();
         RIRt.multiplyMatrices(RI, RTranspose);
         body.invInertia.copy(RIRt);
-        body.inertiaTensor.copy(body.invInertia.clone().invert())
+
+        // Angular acceleration Alpha = T / I = T * I^-1
+        let angularAcceleration = new THREE.Vector3();
+        angularAcceleration.copy(body.totalTorque).applyMatrix3(RIRt);
+
+        // adding change in angular velocity: delta omega = alpha * dt
+        // omega += delta omega
         let omega = new THREE.Vector3();
-        omega.copy(body._L).applyMatrix3(RIRt);
+        omega.copy(body.angularVelocity);
+        omega.add(angularAcceleration.multiplyScalar(dt))
+        this.updateBodyDrag(omega, body.angularDrag, dt)
         body.angularVelocity.copy(omega);
+        
+        // convert omega to skew symmetric matrix
         let crossOmega = crossMatrix(omega);
 
+        // change in omega = omega * Rotation * dt
         let CRR = new THREE.Matrix3();
         CRR.multiplyMatrices(crossOmega, rotation);
-
         CRR.multiplyScalar(dt);
+
+        // Rotation += change in omega
         for (let index = 0; index < rotation.elements.length; index++) {
             rotation.elements[index] += CRR.elements[index];
         }
+        // reorthogonalize the matrix a rotation matrix is always orthogonal
         reorthogonalize(rotation)
         let mat4 = new THREE.Matrix4().setFromMatrix3(rotation);
 
+        // update the body quaternion
         body.rotation.setFromRotationMatrix(mat4)
         body.rotation.normalize();
     }
