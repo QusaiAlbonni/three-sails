@@ -77,11 +77,9 @@ class BuoyancySystem extends System {
             let F = waterNormal.clone().multiplyScalar(-displacmentVolume * forceDensityFactor);
             rb.addForceAtPosition(F, worldPos)
         }
-        
-        console.log(rb.totalForce);
         submergedVolume = submergedVolume / voxelCount;
-        rb.drag = lerp(0.2, 1.0, submergedVolume);
-        rb.angularDrag = lerp(0.3, 1.0, submergedVolume);
+        rb.drag = lerp(0.05, 1.0, submergedVolume);
+        rb.angularDrag = lerp(0.01, 1.0, submergedVolume);
     }
 }
 

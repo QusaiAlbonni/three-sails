@@ -154,7 +154,6 @@ class PhysicsSystem extends System {
     }
 
 
-    // TODO: replace current solution with quaternion math
     updateBodyAngularVelocity(body, dt) {
 
         // current rotation of body in Matrix3 form
@@ -182,6 +181,7 @@ class PhysicsSystem extends System {
         body.angularVelocity.copy(omega);
 
         // update the body quaternion
+        // dq/dt = omega * dt * 0.5
         body.rotation.multiply(this.deltaRotationAppx2(omega, dt));
         body.rotation.normalize()
     }

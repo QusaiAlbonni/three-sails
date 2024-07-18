@@ -257,7 +257,7 @@ phyBoat.traverse(function (child) {
 	}
 });
 
-const voxy = new VoxelizedMesh(phyBoatVoxelMesh, 0.5, 0.5, {x: 0.5, y:0.0, z:0.0}, new THREE.MeshLambertMaterial({color: 0x00ff00}))
+const voxy = new VoxelizedMesh(phyBoatVoxelMesh, 0.4, 0.4, {x: 0.5, y:0.0, z:0.0}, new THREE.MeshLambertMaterial({color: 0x00ff00}))
 phyBoatVoxelMesh= voxy.voxelMesh
 const phyBoatNonIndGeo = phyBoatIndGeo.toNonIndexed()
 
