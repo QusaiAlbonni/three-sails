@@ -24,7 +24,7 @@ class SkyBehavior extends Behavior {
         var textureLoader = new THREE.TextureLoader();
         textureLoader.load(path, (texture) => {
             texture.mapping = THREE.EquirectangularReflectionMapping;
-            this.scene.environment = texture;
+            
           });
 
         const helper = new THREE.DirectionalLightHelper(directionalLight);

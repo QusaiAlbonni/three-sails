@@ -144,10 +144,10 @@ const postProcessingEntity = {
 			pass: fxaaPass,
 			composer: composer,
 		},
-		ssao: {
-			type: "PassComponent",
-			pass: new EffectPass(mainCamera, new SSAOEffect(mainCamera, mainScene)),
-		},
+		// ssao: {
+		// 	type: "PassComponent",
+		// 	pass: new EffectPass(mainCamera, new SSAOEffect(mainCamera, mainScene)),
+		// },
 	},
 };
 
@@ -174,54 +174,54 @@ const skyEntity = {
 const me = new THREE.Mesh(nonIndexGeo, mat);
 nonIndexGeo.scale(10, 10, 10);
 
-const exampleBoxEntity = {
-	c: {
-		meshFilter: {
-			type: "MeshFilter",
-			mesh: me,
-			scene: mainScene,
-		},
-		script: {
-			type: "Script",
-			script: new NewScript(),
-		},
-		transform: {
-			type: "Transform",
-			obj: me,
-		},
-		gui: {
-			type: "GUIcomponent",
-			list: [
-				{
-					path: [""],
-					guiType: "slider",
-					properityName: "x",
-					target: me.position,
-					max: 3,
-					min: -3,
-					step: 0.1,
-					name: "X-Axis",
-				},
-			],
-		},
-		script: {
-			type: "Script",
-			script: new NewScript(),
-		},
-		transform: {
-			type: "Transform",
-			obj: me,
-		},
-		rigidBody: {
-			type: "RigidBody",
-			geometry: nonIndexGeo,
-			mass: 55,
-			affectedByGravity: false,
-			drag: 0.5,
-			angularDrag:0.5
-		},
-	},
-};
+// const exampleBoxEntity = {
+// 	c: {
+// 		meshFilter: {
+// 			type: "MeshFilter",
+// 			mesh: me,
+// 			scene: mainScene,
+// 		},
+// 		script: {
+// 			type: "Script",
+// 			script: new NewScript(),
+// 		},
+// 		transform: {
+// 			type: "Transform",
+// 			obj: me,
+// 		},
+// 		gui: {
+// 			type: "GUIcomponent",
+// 			list: [
+// 				{
+// 					path: [""],
+// 					guiType: "slider",
+// 					properityName: "x",
+// 					target: me.position,
+// 					max: 3,
+// 					min: -3,
+// 					step: 0.1,
+// 					name: "X-Axis",
+// 				},
+// 			],
+// 		},
+// 		script: {
+// 			type: "Script",
+// 			script: new NewScript(),
+// 		},
+// 		transform: {
+// 			type: "Transform",
+// 			obj: me,
+// 		},
+// 		rigidBody: {
+// 			type: "RigidBody",
+// 			geometry: nonIndexGeo,
+// 			mass: 55,
+// 			affectedByGravity: false,
+// 			drag: 0.5,
+// 			angularDrag:0.5
+// 		},
+// 	},
+// };
 
 const water = new Water(65, 4000000, 14000000);
 const waterEntity = {
@@ -256,10 +256,11 @@ phyBoat.traverse(function (child) {
 		phyBoatVoxelMesh = child
 	}
 });
-const voxy = new VoxelizedMesh(phyBoatVoxelMesh, 0.4, 0.5, {x: 0.25, y:0.0, z:0.0}, new THREE.MeshLambertMaterial({color: 0x00ff00}))
-console.log(voxy.voxels.length);
+
+const voxy = new VoxelizedMesh(phyBoatVoxelMesh, 0.5, 0.5, {x: 0.5, y:0.0, z:0.0}, new THREE.MeshLambertMaterial({color: 0x00ff00}))
 phyBoatVoxelMesh= voxy.voxelMesh
 const phyBoatNonIndGeo = phyBoatIndGeo.toNonIndexed()
+
 const boatEntity = {
 	tags: ["objectToBeFollowed"],
 	c: {
@@ -275,8 +276,14 @@ const boatEntity = {
 		rigidBody: {
 		  type: "RigidBody",
 		  geometry: phyBoatNonIndGeo,
-		  mass: 5000,
-		  affectedByGravity: false,
+		  mass: 12000,
+		  affectedByGravity: true,
+		},
+		buoyantBody: {
+			type: "BuoyantBody",
+			voxelizedMesh: voxy,
+			water: water,
+
 		},
 		script: {
 			type: "Script",
@@ -288,16 +295,11 @@ const boatEntity = {
 const basicMesh = new THREE.Mesh(geo, mat);
 basicMesh.position.set(0, 10, 0);
 mainCamera.position.x = basicMesh.position.x;
-mainCamera.position.z = basicMesh.position.z + 30;
+mainCamera.position.z = basicMesh.position.z - 30;
 mainCamera.position.y = basicMesh.position.y + 15;
 const invisibleMeshEntitiy = {
 	tags: ["Follower"],
 	c: {
-		/* meshFilter: {
-		  type: "MeshFilter",
-		  mesh: basicMesh,
-		  scene:mainScene,
-		}, */
 		transform: {
 			type: "Transform",
 			obj: basicMesh,
@@ -311,7 +313,6 @@ const entities = [
 	cameraEntity,
 	postProcessingEntity,
 	skyEntity,
-	exampleBoxEntity,
 	waterEntity,
 	boatEntity,
 	invisibleMeshEntitiy,

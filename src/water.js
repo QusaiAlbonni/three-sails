@@ -268,19 +268,12 @@ class Water extends BatchedMesh {
     set objectToBeFollowed(obj) {
         this.settings.objectToBeFollowed = obj
     }
-    /**
-     * @param {THREE.Vector2} position
-     * position to be caclulated
-     */
-    getHeightAtPos(position) {
-        return this._waveHeight(position.x, position.y, this.shader.uniforms.numWaves.value, 2);
+    getHeightAtPos(x, y){
+        return this._waveHeight(x, y, this.shader.uniforms.numWaves.value, this.settings.WAVE_FUNCTION)
     }
-    /**
-     * @param {THREE.Vector2} position
-     * position to be caclulated
-     */
-    getNormalAtPos(position) {
-        return this._waveNormal(position.x, position.y, this.shader.uniforms.numWaves.value, 2);        
+
+    getNormalAtPos(x, y) {
+        return this._waveNormal(x, y, this.shader.uniforms.numWaves.value, this.settings.WAVE_FUNCTION);        
     }
 
 

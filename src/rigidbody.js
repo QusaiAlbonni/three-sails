@@ -1,5 +1,5 @@
 import { Component } from "ape-ecs";
-import { Vector3, Matrix3, BufferGeometry, BoxGeometry } from "three";
+import { Vector3, Matrix3, BoxGeometry } from "three";
 import { EPSILON } from "./utils";
 
 class RigidBody extends Component {

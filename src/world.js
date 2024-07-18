@@ -3,6 +3,7 @@ import { components, tags } from "./components";
 import { entities } from "./entities";
 import systems from "./systems/systems";
 import { Clock } from "three";
+import { clamp } from "three/src/math/MathUtils.js";
 
 class GameWorld {
     constructor(clock){
@@ -13,7 +14,6 @@ class GameWorld {
     }
 
     init(args){
-        args.accumulatedPhyTime = 0;
         this._world.worldConfigutaion(args);
 
         this._world.registerComponents(components);
@@ -23,7 +23,7 @@ class GameWorld {
     }
     update(){
         this._world.updateTime();
-        this.tick = this._world.runSystems();
+        this.tick = this._world.runSystems(['MainSystems', 'FixedSystems']);
     }
 
 
@@ -44,7 +44,7 @@ class WorldManager {
 
     registerSystems(systems){
         for (let index = 0; index < systems.length; index++) {
-            this.world.registerSystem('mainSystems', systems[index], [this.clock, this.physicsClock]);
+            this.world.registerSystem(systems[index].group, systems[index].system, [this.clock, this.physicsClock]);
         }
     }
 
@@ -58,8 +58,12 @@ class WorldManager {
         this.world.registerTags(...tags);
     }
 
-    runSystems(){
-        this.world.runSystems('mainSystems');
+    runSystems(groups){
+        for (let group of groups){
+            if (group !== 'FixedSystems')
+                this.world.runSystems(group)
+        }
+        this.fixedUpdateSystems();
         this.world.tick();
 
         return this.world.currentTick;
@@ -73,7 +77,15 @@ class WorldManager {
         this.world.deltaTime = this.clock.getDelta();
         this.world.physicsDeltaTime = this.physicsClock.getDelta();
     }
-    
+
+    fixedUpdateSystems(){
+        this.world.accumulatedPhyTime += this.world.deltaTime;
+        this.world.accumulatedPhyTime = clamp(this.world.accumulatedPhyTime, 0, this.world.maxTickTime);
+        while (this.world.accumulatedPhyTime >= this.world.fixedDeltaTime) {
+            this.world.runSystems('FixedSystems')
+            this.world.accumulatedPhyTime -= this.world.fixedDeltaTime;
+        }
+    }
 }
 
 export default GameWorld;

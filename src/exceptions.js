@@ -18,4 +18,14 @@ class RigidBodyDataError extends Error{
     }
 }
 
-export {RigidBodyArithmaticError, RigidBodyDataError}
+class ComponentDataError extends Error{
+    constructor(message){
+        if (message === undefined){
+            message = "Invalid Component values";
+        }
+        super(message);
+        this.name = this.constructor.name;
+    }
+}
+
+export {RigidBodyArithmaticError, RigidBodyDataError, ComponentDataError}

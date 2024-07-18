@@ -11,10 +11,13 @@ class PhysicsSystem extends System {
         this.rigidbodyQuery = this.world.createQuery().fromAll('Transform', 'RigidBody').persist();
         this.clock = clock;
         this.physicsClock = physicsClock;
+
+        let rigidBodyEntities = this.rigidbodyQuery.refresh().execute();
+        this._phyStart(rigidBodyEntities);
     }
 
     update(currentTick) {
-        
+
         let scriptEntities = this.scriptsQuery.refresh().execute();
         let newRigidBodyEntities = this.rigidbodyQuery.refresh().execute({
             updatedComponents: this.world.currentTick,
@@ -59,7 +62,6 @@ class PhysicsSystem extends System {
             this._initialTensor(rb);
             rb.position = entity.getOne("Transform").obj.position.clone();
             rb.rotation = entity.getOne("Transform").obj.quaternion.clone();
-            rb._L = new THREE.Vector3(0, 0, 0);
         }
         catch (e) {
             throw new RigidBodyArithmaticError(e);
@@ -67,13 +69,8 @@ class PhysicsSystem extends System {
     }
 
     _phyUpdate(scriptEntities, phyEntities) {
-        this.world.accumulatedPhyTime += this.world.deltaTime;
-        this.world.accumulatedPhyTime = clamp(this.world.accumulatedPhyTime, 0, this.world.maxTickTime);
-        while (this.world.accumulatedPhyTime >= this.world.fixedDeltaTime) {
-            this._fixedUpdate(scriptEntities);
-            this._updateRigidBodyEntities(phyEntities);
-            this.world.accumulatedPhyTime -= this.world.fixedDeltaTime;
-        }
+        this._fixedUpdate(scriptEntities);
+        this._updateRigidBodyEntities(phyEntities);
     }
 
     _fixedUpdate(entities) {
@@ -135,8 +132,8 @@ class PhysicsSystem extends System {
      * @param {Number} dt 
      * @returns {undefined}
      */
-    updateBodyDrag(vel, drag, dt){
-        if(drag < EPSILON)
+    updateBodyDrag(vel, drag, dt) {
+        if (drag < EPSILON)
             return;
         vel.multiplyScalar(clamp(1 - dt * drag, 0, 1));
     }
@@ -147,7 +144,7 @@ class PhysicsSystem extends System {
          * @type {THREE.Vector3}
          */
         let acceleration = body.totalForce.clone().divideScalar(body.mass);
-        if(body.affectedByGravity){
+        if (body.affectedByGravity) {
             acceleration.add(this.world.gravity)
         }
         body.velocity.add(acceleration.clone().multiplyScalar(dt));
@@ -163,7 +160,7 @@ class PhysicsSystem extends System {
         // current rotation of body in Matrix3 form
         let rotation = new THREE.Matrix3().setFromMatrix4(new THREE.Matrix4().makeRotationFromQuaternion(body.rotation));
         reorthogonalize(rotation);
-        
+
         // current inverse inertia tensor of body I^-1 = Rotation * I0^-1 Rotation^T
         let RI = new THREE.Matrix3();
         RI.multiplyMatrices(rotation, body.initialInvInertia);
@@ -183,26 +180,24 @@ class PhysicsSystem extends System {
         omega.add(angularAcceleration.multiplyScalar(dt))
         this.updateBodyDrag(omega, body.angularDrag, dt)
         body.angularVelocity.copy(omega);
-        
-        // convert omega to skew symmetric matrix
-        let crossOmega = crossMatrix(omega);
-
-        // change in omega = omega * Rotation * dt
-        let CRR = new THREE.Matrix3();
-        CRR.multiplyMatrices(crossOmega, rotation);
-        CRR.multiplyScalar(dt);
-
-        // Rotation += change in omega
-        for (let index = 0; index < rotation.elements.length; index++) {
-            rotation.elements[index] += CRR.elements[index];
-        }
-        // reorthogonalize the matrix a rotation matrix is always orthogonal
-        reorthogonalize(rotation)
-        let mat4 = new THREE.Matrix4().setFromMatrix3(rotation);
 
         // update the body quaternion
-        body.rotation.setFromRotationMatrix(mat4)
-        body.rotation.normalize();
+        body.rotation.multiply(this.deltaRotationAppx2(omega, dt));
+        body.rotation.normalize()
+    }
+
+    deltaRotationAppx1(em, deltaTime) {
+        let ha = em.clone().multiplyScalar(deltaTime * 0.5);
+        return new THREE.Quaternion(ha.x, ha.y, ha.z, 1.0);
+    }
+
+    deltaRotationAppx2(em, deltaTime) {
+        let ha = em.clone().multiplyScalar(deltaTime * 0.5);
+        let l = ha.length()
+        if (l > 0) {
+            ha.multiplyScalar(Math.sin(l) / l);
+        }
+        return new THREE.Quaternion(ha.x, ha.y, ha.z, Math.cos(l));
     }
 
     updateBodyPosition(body, dt) {

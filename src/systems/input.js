@@ -93,8 +93,8 @@ class InputSystem extends System {
             const directionp = new THREE.Vector3(0, 0, 1); directionp.applyAxisAngle(new THREE.Vector3(0, 1, 0), this.boat.rotation.y);
             this.invisibleFollower.position.copy(this.boat.position);
             this.invisibleFollower.rotation.copy(this.boat.rotation);
-            this.camera.position.y = this.invisibleFollower.position.y + 15;
-            const distancep = 30;
+            this.camera.position.y = this.invisibleFollower.position.y + 5;
+            const distancep = 3;
             const sphereXp = this.invisibleFollower.position.x + distancep * Math.sin(this.invisibleFollower.rotation.y);
             const sphereZp = this.invisibleFollower.position.z + distancep * Math.cos(this.invisibleFollower.rotation.y);
             this.camera.position.set(sphereXp, this.camera.position.y, sphereZp);
@@ -108,12 +108,12 @@ class InputSystem extends System {
                 this.invisibleFollower.position.x += Math.sin(this.invisibleFollower.rotation.y) * this.movementk;
                 this.invisibleFollower.position.z += Math.cos(this.invisibleFollower.rotation.y) * this.movementk;
                 this.invisibleFollower.position.y += Math.sin(this.invisibleFollower.rotation.x) * this.movementk;
-                const distancep = 30;
+                const distancep = 8;
                 const sphereXp = this.invisibleFollower.position.x + distancep * Math.sin(this.invisibleFollower.rotation.y);
                 const sphereZp = this.invisibleFollower.position.z + distancep * Math.cos(this.invisibleFollower.rotation.y);
                 const sphereYp = this.invisibleFollower.position.y + distancep * Math.sin(this.invisibleFollower.rotation.x);
 
-                this.camera.position.set(sphereXp, sphereYp + 15, sphereZp);
+                this.camera.position.set(sphereXp, sphereYp + 10, sphereZp);
                 this.camera.lookAt(this.invisibleFollower.position);
             }
         }

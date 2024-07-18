@@ -1,10 +1,9 @@
-import * as THREE from "three";
 import { Component } from "ape-ecs";
-import { Effect, Pass, BloomEffect, EffectPass } from "postprocessing";
-import { Camera, Matrix3, Mesh, Object3D, Vector3 } from "three";
+import { Camera, Mesh, Object3D} from "three";
 import Behavior from "./scripts/base";
 import RigidBody from "./rigidbody";
-import { BufferGeometry } from "three";
+import BuoyantBody from "./bouyantbody";
+import { Pass } from "postprocessing";
 class Transform extends Component {
   static properties = {
     obj: new Object3D(),
@@ -73,6 +72,7 @@ const components = [
   GUIcomponent,
   Script,
   RigidBody,
+  BuoyantBody
 ];
 
 const tags = ["MainCamera", "MainGameRender","objectToBeFollowed","Follower"];

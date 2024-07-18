@@ -1,0 +1,88 @@
+import { System, Entity } from "ape-ecs";
+import { ComponentDataError } from "../exceptions";
+import { clamp } from "three/src/math/MathUtils.js";
+import { Vector3 } from "three";
+import { lerp } from "three/src/math/MathUtils.js";
+class BuoyancySystem extends System {
+    init() {
+        this.bodyQuery = this.world.createQuery().fromAll('Transform', 'RigidBody', 'BuoyantBody').persist();
+    }
+    update(currentTick) {
+        let newEntities = this.bodyQuery.refresh().execute({
+            updatedComponents: this.world.currentTick,
+            updatedValues: this.world.currentTick
+        });
+        for (let entity of newEntities) {
+            let rb = entity.getOne('RigidBody')
+            let buoy = entity.getOne('BuoyantBody')
+            this.initBodies(buoy, rb, entity)
+        }
+        let entities = this.bodyQuery.refresh().execute();
+        for (let entity of entities) {
+            let rb = entity.getOne('RigidBody')
+            let buoy = entity.getOne('BuoyantBody')
+            let transform = entity.getOne('Transform').obj
+            if (rb.isKinematic)
+                this.updateBuoyancy(buoy, rb, transform)
+        }
+    }
+    /**
+     * 
+     * @param {*} bb 
+     * @param {*} rb 
+     * @param {Entity} entity 
+     */
+    initBodies(bb, rb, entity) {
+        if (bb.drawVoxels){
+            let scene = entity.getOne('MeshFilter').scene;
+            entity.addComponent({
+                type: 'MeshFilter',
+                mesh: bb.voxelizedMesh.voxelMesh,
+                scene: scene
+            })
+        }
+    }
+    updateBuoyancy(bb, rb, transform) {
+        let V = bb.volume == null ? rb.volume : bb.volume;
+        let m = bb.mass == null ? rb.mass : bb.mass;
+        let density = m / V;
+        let fluidDensity = bb.fluidDensity * bb.fluidDensityMultiplier;
+
+
+        let voxels = bb.voxelizedMesh.voxels;
+        let voxelCount = voxels.length
+        let water = bb.water;
+
+        let submergedVolume = 0.0
+        let localVoxelHeight = bb.voxelizedMesh.voxelSize
+
+        let voxelVolume = V / voxelCount
+        let forceDensityFactor = (fluidDensity - density) * voxelVolume
+
+        for (let index = 0; index < voxelCount; index++) {
+            let worldPos = voxels[index].position.clone();
+            worldPos.applyMatrix4(transform.matrixWorld);
+
+            let waterHeight = bb.water.getHeightAtPos(worldPos.x, worldPos.z);
+            let waterNormal = bb.water.getNormalAtPos(worldPos.x, worldPos.z)
+            let depth = waterHeight - worldPos.y + localVoxelHeight;
+            let voxelContrib = clamp(depth / localVoxelHeight, 0.0, 1.0);
+
+            depth = clamp(depth, 0.0, 1.0)
+
+            submergedVolume += voxelContrib;
+
+            let displacmentVolume = Math.max(0.0, depth);
+            waterNormal.multiplyScalar(this.world.gravity.y)
+            let F = waterNormal.clone().multiplyScalar(-displacmentVolume * forceDensityFactor);
+            rb.addForceAtPosition(F, worldPos)
+        }
+        
+        console.log(rb.totalForce);
+        submergedVolume = submergedVolume / voxelCount;
+        rb.drag = lerp(0.2, 1.0, submergedVolume);
+        rb.angularDrag = lerp(0.3, 1.0, submergedVolume);
+    }
+}
+
+export default BuoyancySystem;
