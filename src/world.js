@@ -20,6 +20,7 @@ class GameWorld {
         this._world.registerTags(tags);
         this._world.createEntities(entities);
         this._world.registerSystems(systems);
+
     }
     update(){
         this._world.updateTime();
@@ -82,7 +83,7 @@ class WorldManager {
         this.world.accumulatedPhyTime += this.world.deltaTime;
         this.world.accumulatedPhyTime = clamp(this.world.accumulatedPhyTime, 0, this.world.maxTickTime);
         while (this.world.accumulatedPhyTime >= this.world.fixedDeltaTime) {
-            this.world.runSystems('FixedSystems')
+            this.world.runSystems('FixedSystems');
             this.world.accumulatedPhyTime -= this.world.fixedDeltaTime;
         }
     }

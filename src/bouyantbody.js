@@ -12,7 +12,9 @@ class BuoyantBody extends Component {
         fluidDensityMultiplier: 1.0,
         voxelizedMesh: null,
         water: null,
-        drawVoxels: false
+        drawVoxels: false,
+        minimumWaterDrag: 0.1,
+        minimumWaterAngularDrag: 0.1
     }
 }
 

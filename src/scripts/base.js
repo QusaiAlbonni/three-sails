@@ -1,5 +1,6 @@
 import { components } from "../components";
 import * as THREE from 'three'
+import { Entity } from "ape-ecs";
 
 class Behavior {
     start() {

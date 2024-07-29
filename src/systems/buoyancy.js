@@ -5,12 +5,12 @@ import { Vector3 } from "three";
 import { lerp } from "three/src/math/MathUtils.js";
 class BuoyancySystem extends System {
     init() {
-        this.bodyQuery = this.world.createQuery().fromAll('Transform', 'RigidBody', 'BuoyantBody').persist();
+        this.bodyQuery = this.world.createQuery().fromAll('Transform', 'RigidBody', 'BuoyantBody').persist(true);
     }
     update(currentTick) {
         let newEntities = this.bodyQuery.refresh().execute({
-            updatedComponents: this.world.currentTick,
-            updatedValues: this.world.currentTick
+            updatedComponents: currentTick ,
+            updatedValues: currentTick
         });
         for (let entity of newEntities) {
             let rb = entity.getOne('RigidBody')
@@ -37,9 +37,11 @@ class BuoyancySystem extends System {
             let scene = entity.getOne('MeshFilter').scene;
             entity.addComponent({
                 type: 'MeshFilter',
+                key: 'meshFil',
                 mesh: bb.voxelizedMesh.voxelMesh,
                 scene: scene
-            })
+            });
+            console.log(entity.updatedComponents);
         }
     }
     updateBuoyancy(bb, rb, transform) {
@@ -78,8 +80,12 @@ class BuoyancySystem extends System {
             rb.addForceAtPosition(F, worldPos)
         }
         submergedVolume = submergedVolume / voxelCount;
-        rb.drag = lerp(0.05, 1.0, submergedVolume);
-        rb.angularDrag = lerp(0.01, 1.0, submergedVolume);
+
+        rb.drag = lerp(bb.minimumWaterDrag, 1.0, submergedVolume);
+        rb.angularDrag = lerp(bb.minimumWaterAngularDrag, 1.0, submergedVolume);
+
+        bb.voxelizedMesh.voxelMesh.position.copy(rb.position);
+        bb.voxelizedMesh.voxelMesh.quaternion.copy(rb.rotation);
     }
 }
 

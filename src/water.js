@@ -3,13 +3,13 @@ import * as THREE from 'three'
 import waternormals from '../assets/textures/waternormals.jpg'
 import water_defines_vertex from '../assets/shaders/water_defines.vert'
 import water_begin_vertex from '../assets/shaders/water_begin.vert'
-
+import { seededRandom } from "three/src/math/MathUtils.js";
 class Water extends BatchedMesh {
-    constructor(maxGeometryCount, maxVertexCount, maxIndexCount = maxVertexCount * 2, material = undefined) {
+    constructor(maxGeometryCount, maxVertexCount, maxIndexCount = maxVertexCount * 2, material = undefined, objectToBeFollowed) {
         super(maxGeometryCount, maxVertexCount, maxIndexCount, material);
         this.settings = {
             planeVerts: 600,
-            planeSize: 250,
+            planeSize: 150,
             timeDilation: 1,
             timeOffset: 3,
             numOfWaves: 20,
@@ -17,13 +17,13 @@ class Water extends BatchedMesh {
             startingAmplitude: 0.12,
             startingSpeed: 0.002,
             directionRandomSeed: 187,
-            dirSeedIterator: 1653.215,
-            randomnessDirContribution: 0.5,
+            dirSeedIterator: -183.215,
+            randomnessDirContribution: 0.0,
             //1 or 2 only
             WAVE_FUNCTION: 2,
             ampfactor: 0.82,
             wavefactor: 0.84,
-            speedfactor: 0.97,
+            speedfactor: 0.8,
             k: 2.5,
             numOfIterations: 64,
             maxAmplitude: 3.0,
@@ -42,14 +42,14 @@ class Water extends BatchedMesh {
             minDistanceToWave: 0.01,
             maxDistanceToWave: 1000,
             maxHeightMultiplier: 4,
-            objectToBeFollowed: new THREE.Object3D(),
+            objectToBeFollowed: objectToBeFollowed == undefined ? new THREE.Object3D(): objectToBeFollowed,
             chunkNum: 8,
             maxHeight: 0,
             amplitudes: [],
             waveLengths: [],
             speeds: [],
             directions: [],
-            chunkDropOffFactor: 2,
+            chunkDropOffFactor: 1.25,
         }
         this.uniforms = {};
         this.textureLoader = new THREE.TextureLoader();
@@ -133,7 +133,7 @@ class Water extends BatchedMesh {
             specularIntensity: 0.5,
             specularColor: 0xffffff,
             bumpMap: this.textureLoader.load(waternormals),
-            bumpScale: 0.2,
+            bumpScale: 0.4,
             defines: {
                 NUM_OF_WAVES: this.settings.numOfWaves,
                 WAVE_FUNCTION: this.settings.WAVE_FUNCTION,
@@ -214,7 +214,7 @@ class Water extends BatchedMesh {
 
     update(time) {
         this.position.x = this.settings.objectToBeFollowed.position.x;
-        this.position.y = this.settings.objectToBeFollowed.position.y;
+        this.position.z = this.settings.objectToBeFollowed.position.z;
         this.shader.uniforms.time.value = time * this.settings.timeDilation + this.settings.timeOffset;
         this.material.bumpMap.offset.set(time * 0.01, time * 0.01).add(this.settings.directionBias);
         this._updateShader();

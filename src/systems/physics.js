@@ -132,10 +132,16 @@ class PhysicsSystem extends System {
      * @param {Number} dt 
      * @returns {undefined}
      */
-    updateBodyDrag(vel, drag, dt) {
+    updateBodyDragApprox(vel, drag, dt) {
         if (drag < EPSILON)
             return;
         vel.multiplyScalar(clamp(1 - dt * drag, 0, 1));
+    }
+    
+    updateBodyDragPrecise(vel, drag, dt) {
+        if (drag < EPSILON)
+            return;
+        vel.multiplyScalar(Math.exp(-dt * drag));
     }
 
 
@@ -148,7 +154,7 @@ class PhysicsSystem extends System {
             acceleration.add(this.world.gravity)
         }
         body.velocity.add(acceleration.clone().multiplyScalar(dt));
-        this.updateBodyDrag(body.velocity, body.drag, dt)
+        this.updateBodyDragPrecise(body.velocity, body.drag, dt)
         this.updateBodyPosition(body, dt);
 
     }
@@ -177,12 +183,12 @@ class PhysicsSystem extends System {
         let omega = new THREE.Vector3();
         omega.copy(body.angularVelocity);
         omega.add(angularAcceleration.multiplyScalar(dt))
-        this.updateBodyDrag(omega, body.angularDrag, dt)
+        this.updateBodyDragPrecise(omega, body.angularDrag, dt)
         body.angularVelocity.copy(omega);
 
         // update the body quaternion
         // dq/dt = omega * dt * 0.5
-        body.rotation.multiply(this.deltaRotationAppx2(omega, dt));
+        body.rotation.multiply(this.deltaRotationAppx1(omega, dt));
         body.rotation.normalize()
     }
 
@@ -286,6 +292,7 @@ class PhysicsSystem extends System {
         rb.initialInvInertia = rb.initialInertiaTensor.clone().invert();
 
         geo.translate(-rb.centerOfMass.x, -rb.centerOfMass.y, -rb.centerOfMass.z)
+
     }
 
     /**

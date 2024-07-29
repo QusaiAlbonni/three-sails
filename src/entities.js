@@ -223,7 +223,16 @@ nonIndexGeo.scale(10, 10, 10);
 // 	},
 // };
 
-const water = new Water(65, 4000000, 14000000);
+const boat = await loadModel(boatModel);
+
+var rudder;
+boat.traverse((obj) => {
+	if (obj.name === 'rudder')
+		rudder = obj
+})
+
+
+const water = new Water(65, 4000000, 14000000,undefined, boat);
 const waterEntity = {
 	c: {
 		meshFilter: {
@@ -242,7 +251,7 @@ const waterEntity = {
 	}
 };
 
-const boat = await loadModel(boatModel);
+
 const phyBoat = await loadModel(phyBoatModel);
 var phyBoatIndGeo;
 var phyBoatVoxelMesh;
@@ -257,7 +266,7 @@ phyBoat.traverse(function (child) {
 	}
 });
 
-const voxy = new VoxelizedMesh(phyBoatVoxelMesh, 0.4, 0.4, {x: 0.5, y:0.0, z:0.0}, new THREE.MeshLambertMaterial({color: 0x00ff00}))
+const voxy = new VoxelizedMesh(phyBoatVoxelMesh, 0.5, 0.5, {x: 0.0, y:0.0, z:0.0}, new THREE.MeshLambertMaterial({color: 0x00ff00}))
 phyBoatVoxelMesh= voxy.voxelMesh
 const phyBoatNonIndGeo = phyBoatIndGeo.toNonIndexed()
 
@@ -276,14 +285,14 @@ const boatEntity = {
 		rigidBody: {
 		  type: "RigidBody",
 		  geometry: phyBoatNonIndGeo,
-		  mass: 12000,
+		  mass: 10000,
 		  affectedByGravity: true,
 		},
 		buoyantBody: {
 			type: "BuoyantBody",
 			voxelizedMesh: voxy,
 			water: water,
-
+			drawVoxels: true
 		},
 		script: {
 			type: "Script",
@@ -293,10 +302,10 @@ const boatEntity = {
 };
 
 const basicMesh = new THREE.Mesh(geo, mat);
-basicMesh.position.set(0, 10, 0);
+basicMesh.position.set(0, 0, 0);
 mainCamera.position.x = basicMesh.position.x;
 mainCamera.position.z = basicMesh.position.z - 30;
-mainCamera.position.y = basicMesh.position.y + 15;
+mainCamera.position.y = basicMesh.position.y + 5;
 const invisibleMeshEntitiy = {
 	tags: ["Follower"],
 	c: {

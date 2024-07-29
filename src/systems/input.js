@@ -26,7 +26,7 @@ class InputSystem extends System {
         this.rot = 0;
         this.rotk = 0.05;
         this.freelock = true;
-        this.ppress = true;
+        this.ppress = false;
 
         this.keyboard = [];
         window.addEventListener('keydown', (event) => {
