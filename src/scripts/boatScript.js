@@ -23,9 +23,8 @@ class BoatBehavior extends Behavior {
  					step: 1,
  					name: "mass",
 					onChange: function (value) {
-						console.log('dasd');
-						this.body.update({mass: value});
-					}
+						
+					}.bind(this)
  				},
 				{
 					path: ["boat", "Bouyancy"],
