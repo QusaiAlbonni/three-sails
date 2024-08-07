@@ -1,5 +1,6 @@
 import { System } from "ape-ecs";
-import { RenderPass } from 'postprocessing';
+import { RenderPass,ToneMappingEffect,EffectPass } from 'postprocessing';
+import * as THREE from 'three';
 import Stats from 'three/examples/jsm/libs/stats.module';
 
 class RenderSystem extends System {
@@ -24,6 +25,8 @@ class RenderSystem extends System {
         this.renderOptions.domElement.appendChild(this.stats.dom);
 
         this.renderer.setSize(this.renderOptions.width, this.renderOptions.height);
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 0.5; 
         this.composer.setSize(this.renderOptions.width, this.renderOptions.height);        
         if (this.renderOptions.resize)
             window.addEventListener('resize', (event) => this._onWindowResize());
@@ -77,6 +80,11 @@ class RenderSystem extends System {
     _initRenderPass(composer) {
         this.renderPass = new RenderPass(this.mainScene, this.mainCamera);
         composer.addPass(this.renderPass);
+        const toneMappingEffect = new ToneMappingEffect({
+            mode: THREE.ACESFilmicToneMapping,
+        });
+        const toneMappingPass = new EffectPass(this.mainCamera, toneMappingEffect);
+        composer.addPass(toneMappingPass);
     }
 
     _onWindowResize() {

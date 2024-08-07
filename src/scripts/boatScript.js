@@ -9,7 +9,7 @@ class BoatBehavior extends Behavior {
 	}
 
 	start() {
-		this.transform.position.y= 2
+		this.transform.position.y= 0.5
 		this.entity.addComponent({
 			type: 'GUIcomponent',
 			list: [
@@ -64,7 +64,7 @@ class BoatBehavior extends Behavior {
 	}
 	fixedUpdate() {
 		//this.transform.position.y = this.water.getHeightAtPos(new THREE.Vector2(this.transform.position.x, this.transform.position.z)) + 2;
-		
+		this.body.addForce(new THREE.Vector3(0, 0, 7000))
 	}
 
 

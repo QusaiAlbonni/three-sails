@@ -5,7 +5,7 @@ import CameraBehavior from "./cameraScript";
 import WaterBehavior from "./water";
 import NewScript from "./newScript";
 import BoatBehavior from "./boatScript";
-
+import CloudBehavior from "./cloud";
 
 export {
     Behavior,
@@ -14,5 +14,7 @@ export {
     CameraBehavior,
     WaterBehavior,
     NewScript,
-    BoatBehavior
+    BoatBehavior,
+    CloudBehavior,
+
 }

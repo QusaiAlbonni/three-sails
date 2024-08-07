@@ -17,6 +17,7 @@ import {
 	SkyBehavior,
 	BoxBehavior,
 	BoatBehavior,
+	CloudBehavior,
 } from "./scripts/behaviors";
 import boatModel from "../assets/models/boat/boat.glb";
 import phyBoatModel from "../assets/models/boat/boatphy.glb";
@@ -170,7 +171,18 @@ const skyEntity = {
 		},
 	},
 };
-
+const cloudEntity = {
+	c: {
+	  meshFilter: {
+		type: "MeshFilter",
+		scene: mainScene,
+	  },
+	  script: {
+		type: "Script",
+		script: new CloudBehavior(),
+	  },
+	},
+  };
 const me = new THREE.Mesh(nonIndexGeo, mat);
 nonIndexGeo.scale(10, 10, 10);
 
@@ -224,7 +236,7 @@ nonIndexGeo.scale(10, 10, 10);
 // };
 
 const boat = await loadModel(boatModel);
-
+const boatlight=new THREE.SpotLight(0xffffff,0);
 var rudder;
 boat.traverse((obj) => {
 	if (obj.name === 'rudder')
@@ -277,6 +289,7 @@ const boatEntity = {
 			type: "MeshFilter",
 			mesh: boat,
 			scene: mainScene,
+			light:boatlight,
 		},
 		transform: {
 			type: "Transform",
@@ -325,6 +338,7 @@ const entities = [
 	waterEntity,
 	boatEntity,
 	invisibleMeshEntitiy,
+	cloudEntity,
 ];
 
 export { entities };
