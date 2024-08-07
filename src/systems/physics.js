@@ -110,6 +110,11 @@ class PhysicsSystem extends System {
     _updateBody(rb, dt) {
         let transform = rb.entity.getOne("Transform").obj;
 
+        if (rb.recalculateInertia){
+            this._initialTensor(rb)
+            rb.recalculateInertia = false
+        }
+
         rb.position = transform.position.clone();
         rb.rotation = transform.quaternion.clone();
 

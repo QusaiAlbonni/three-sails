@@ -3,6 +3,7 @@ import { ComponentDataError } from "../exceptions";
 import { clamp } from "three/src/math/MathUtils.js";
 import { Vector3 } from "three";
 import { lerp } from "three/src/math/MathUtils.js";
+import { log } from "three/examples/jsm/nodes/Nodes.js";
 class BuoyancySystem extends System {
     init() {
         this.bodyQuery = this.world.createQuery().fromAll('Transform', 'RigidBody', 'BuoyantBody').persist(true);
@@ -76,13 +77,15 @@ class BuoyancySystem extends System {
 
             let displacmentVolume = Math.max(0.0, depth);
             waterNormal.multiplyScalar(this.world.gravity.y)
-            let F = waterNormal.clone().multiplyScalar(-displacmentVolume * forceDensityFactor);
+            let F = this.world.gravity.clone().multiplyScalar(-displacmentVolume * forceDensityFactor);
             rb.addForceAtPosition(F, worldPos)
         }
         submergedVolume = submergedVolume / voxelCount;
 
+        submergedVolume = Math.sqrt(submergedVolume)
+
         rb.drag = lerp(bb.minimumWaterDrag, 1.0, submergedVolume);
-        rb.angularDrag = lerp(bb.minimumWaterAngularDrag, 1.0, submergedVolume);
+        rb.angularDrag = lerp(bb.minimumWaterAngularDrag, 1.0,  submergedVolume);        
 
         bb.voxelizedMesh.voxelMesh.position.copy(rb.position);
         bb.voxelizedMesh.voxelMesh.quaternion.copy(rb.rotation);

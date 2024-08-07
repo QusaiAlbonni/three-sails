@@ -23,7 +23,7 @@ class BoatBehavior extends Behavior {
  					step: 1,
  					name: "mass",
 					onChange: function (value) {
-						
+						this.body.recalculateInertia = true
 					}.bind(this)
  				},
 				{

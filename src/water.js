@@ -12,7 +12,7 @@ class Water extends BatchedMesh {
             planeSize: 150,
             timeDilation: 1,
             timeOffset: 3,
-            numOfWaves: 20,
+            numOfWaves: 18,
             startingWaveLength: 26,
             startingAmplitude: 0.12,
             startingSpeed: 0.002,
@@ -95,7 +95,7 @@ class Water extends BatchedMesh {
             dirSeed += this.settings.dirSeedIterator;
 
         }
-        this.settings.planeVerts = Math.ceil(this.settings.planeSize / (this.settings.waveLengths[this.settings.waveLengths.length - 1]));
+        this.settings.planeVerts = Math.min(Math.ceil(this.settings.planeSize / (this.settings.waveLengths[this.settings.waveLengths.length - 1])), 600);
         this.updateMaxHeight();
     }
     updateMaxHeight() {
