@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import Rudder from "./scripts/rudder";
 import {
 	EffectComposer,
 	BloomEffect,
@@ -221,7 +222,7 @@ phyBoat.traverse(function (child) {
 const voxy = new VoxelizedMesh(phyBoatVoxelMesh, 0.5, 0.5, {x: 0.0, y:0.0, z:0.0}, new THREE.MeshLambertMaterial({color: 0x00ff00}))
 phyBoatVoxelMesh= voxy.voxelMesh
 const phyBoatNonIndGeo = phyBoatIndGeo.toNonIndexed()
-
+boat.position.y=3;
 const boatEntity = {
 	tags: ["objectToBeFollowed"],
 	c: {
@@ -267,7 +268,30 @@ const invisibleMeshEntitiy = {
 		}
 	}
 }
-
+rudder.geometry.translate(0,0,3)
+const amEntity = {
+  c: {
+    //   meshFilter: {
+    //      type: "MeshFilter",
+    //      mesh: rudder,
+    //      scene: mainScene,
+    //   },
+      transform: {
+          type: "Transform",
+          obj: rudder,
+      },
+      script: {
+          type: "Script",
+          script: new Rudder(rudder),
+      },
+	//   rigidBody: {
+	// 	type: 'RigidBody',
+	// 	geometry: rudder.geometry,
+	// 	mass: 1,
+	// 	affectedByGravity:0
+	// },
+    }
+  };
 const entities = [
 	gameRenderEntity,
 	boxEntity,
@@ -276,6 +300,7 @@ const entities = [
 	skyEntity,
 	waterEntity,
 	boatEntity,
+	amEntity,
 	invisibleMeshEntitiy,
 ];
 
