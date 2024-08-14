@@ -24,7 +24,8 @@ class RigidBody extends Component {
         isKinematic: true,
         affectedByGravity: true,
         drag: 0,
-        angularDrag: 0
+        angularDrag: 0,
+        recalculateInertia: false,
     }
 
 

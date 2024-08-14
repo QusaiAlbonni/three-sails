@@ -23,7 +23,7 @@ class BoatBehavior extends Behavior {
  					step: 1,
  					name: "mass",
 					onChange: function (value) {
-						
+						this.body.recalculateInertia = true
 					}.bind(this)
  				},
 				{
@@ -64,7 +64,7 @@ class BoatBehavior extends Behavior {
 	}
 	fixedUpdate() {
 		//this.transform.position.y = this.water.getHeightAtPos(new THREE.Vector2(this.transform.position.x, this.transform.position.z)) + 2;
-		this.body.addForce(new THREE.Vector3(0, 0, 7000))
+		this.body.addForce(new THREE.Vector3(0, 0, 15000))
 	}
 
 

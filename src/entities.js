@@ -18,8 +18,11 @@ import {
 	BoxBehavior,
 	BoatBehavior,
 	CloudBehavior,
+	MountainBehavior,
 } from "./scripts/behaviors";
 import boatModel from "../assets/models/boat/boat.glb";
+import islandModel from "../assets/models/extra/untitled4.glb";
+import mountainModel from "../assets/models/extra/mountain.glb";
 import phyBoatModel from "../assets/models/boat/boatphy.glb";
 const renderer = new THREE.WebGLRenderer({
 	powerPreference: "high-performance",
@@ -183,6 +186,38 @@ const cloudEntity = {
 	  },
 	},
   };
+const island = await loadModel(islandModel,{x:1,y:1,z:1},{x:1,y:92,z:95});
+
+const islandEntity = {
+	c: {
+		meshFilter: {
+			type: "MeshFilter",
+			mesh: island,
+			scene: mainScene
+		},
+	   
+	},
+  };
+const mountain = await loadModel(mountainModel,{x:0.1,y:0.1,z:0.1},{x:1,y:1,z:1});
+
+const mountainEntity = {
+	c: {
+		meshFilter: {
+			type: "MeshFilter",
+			mesh: mountain,
+			scene: mainScene
+		},
+		transform: {
+			type: "Transform",
+			obj: mountain,
+		},
+		script: {
+			type: "Script",
+			script: new MountainBehavior(),
+		  },
+	   
+	},
+  };
 const me = new THREE.Mesh(nonIndexGeo, mat);
 nonIndexGeo.scale(10, 10, 10);
 
@@ -339,6 +374,8 @@ const entities = [
 	boatEntity,
 	invisibleMeshEntitiy,
 	cloudEntity,
+	islandEntity,
+	mountainEntity
 ];
 
 export { entities };

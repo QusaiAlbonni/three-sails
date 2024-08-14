@@ -2,8 +2,8 @@ import { Vector3 } from "three";
 import Game from "./game";
 
 const options = {
-    tickRate: 100,
-    maxTickTime: 0.1,
+    tickRate: 64,
+    maxTickTime: 0.2,
     gravity: new Vector3(0.0, -9.81, 0.0),
     accumulatedPhyTime: 0
 }

@@ -6,6 +6,7 @@ import WaterBehavior from "./water";
 import NewScript from "./newScript";
 import BoatBehavior from "./boatScript";
 import CloudBehavior from "./cloud";
+import MountainBehavior from "./mountain";
 
 export {
     Behavior,
@@ -16,5 +17,6 @@ export {
     NewScript,
     BoatBehavior,
     CloudBehavior,
+    MountainBehavior
 
 }

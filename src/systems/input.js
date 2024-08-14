@@ -26,11 +26,11 @@ class ThirdPersonCamera {
     }
 
     Update(timeElapsed) {
-        const idealOffset = this._CalculateIdealOffset();
+        const idealOffset = this._CalculateIdealOffset();//targetcamera position
         const idealLookat = this._CalculateIdealLookat();
         const t = 1.0 - Math.pow(0.001, timeElapsed);
 
-        this._currentPosition.lerp(idealOffset, t);
+        this._currentPosition.lerp(idealOffset, t);//target camera position
         this._currentLookat.lerp(idealLookat, t);
 
         this._camera.position.copy(this._currentPosition);
@@ -102,8 +102,8 @@ class InputSystem extends System {
             if(event.key == 'g'){
                 this.twopositioncamera=!this.twopositioncamera
                 if(this.twopositioncamera){
-                    this.distance=3;
-                    this.radius= -5;
+                    this.distance=10;
+                    this.radius= -3.5;
                     this.height = 1;
                 }else{
                     this.distance = 0;
@@ -168,18 +168,23 @@ class InputSystem extends System {
         }
         _pressKeyboard(timeElapsed) {
             if (this.ppress) {
+                
+                const t = 1.0 - Math.pow(0.001, timeElapsed);
                 const directionp = new THREE.Vector3(0, 0, 1);
                 directionp.applyAxisAngle(new THREE.Vector3(0, 1, 0), this.boat.rotation.y);
                 this.updateInvisibleFollowerPosition();
-                this.invisibleFollower.position.copy(this.boat.position);
-                this.invisibleFollower.rotation.copy(this.boat.rotation);
-                const t = 1.0 - Math.pow(0.001, timeElapsed);
+                this.invisibleFollower.position.lerp(this.boat.position, t);
+                this.invisibleFollower.quaternion.slerp(this.boat.quaternion, t); 
+                const idealOffset = new THREE.Vector3(this.radius, this.height, this.radius);
+                idealOffset.applyQuaternion(this.invisibleFollower.quaternion);
+                idealOffset.add(this.invisibleFollower.position);
                 this.camera.position.y = this.invisibleFollower.position.y + this.height;
                 const distancep = this.radius; 
-                const sphereXp = this.invisibleFollower.position.x + distancep * Math.sin(this.invisibleFollower.rotation.y);
-                const sphereZp = this.invisibleFollower.position.z + distancep * Math.cos(this.invisibleFollower.rotation.y);
-                this.targetCameraPosition.set(sphereXp, this.camera.position.y, sphereZp);
-    
+                //const sphereXp = this.invisibleFollower.position.x + distancep * Math.sin(this.invisibleFollower.rotation.y);
+                //const sphereZp = this.invisibleFollower.position.z + distancep * Math.cos(this.invisibleFollower.rotation.y);
+                //this.targetCameraPosition.set(sphereXp, this.camera.position.y, sphereZp);
+                this.targetCameraPosition.lerp(idealOffset, t);
+                 
                 // Linear interpolation
                 this.camera.position.lerp(this.targetCameraPosition, t);
                 this.targetCameraRotation.copy(this.invisibleFollower.quaternion);

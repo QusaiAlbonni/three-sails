@@ -11,7 +11,7 @@ class CloudBehavior extends Behavior {
     glowTimers = [];
     rain;
     raingeo;
-    raincount = 10000;
+    raincount = 15000;
     rainDrops = [];
     winterEffectEnabled = false;  
 
