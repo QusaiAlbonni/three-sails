@@ -4,6 +4,23 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 
 const EPSILON = 1e-8
 
+function signedAngle(vectorA, vectorB, axis) {
+    const unsignedAngle = vectorA.angleTo(vectorB);
+
+    const cross = new THREE.Vector3().crossVectors(vectorA, vectorB);
+
+    const sign = Math.sign(cross.dot(axis));
+
+    return THREE.MathUtils.radToDeg(unsignedAngle) * sign;
+}
+
+function rotateVectorAroundAxis(vector, degree) {
+    const quaternion = new THREE.Quaternion();
+    quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(degree));
+    const rotatedVector = vector.clone().applyQuaternion(quaternion);
+    return rotatedVector;
+}
+
 function crossMatrix(vector) {
 	var Omega = new THREE.Matrix3();
 	Omega.set(
@@ -89,4 +106,4 @@ function isInsideMesh(pos, mesh) {
     let rayCasterIntersects = rayCaster.intersectObject(mesh, false);
     return rayCasterIntersects.length % 2 === 1; 
 }
-export { crossMatrix, reorthogonalize, loadModel, loadFbxModel, isInsideMesh, EPSILON };
+export { crossMatrix, reorthogonalize, loadModel, loadFbxModel, isInsideMesh, signedAngle, rotateVectorAroundAxis, EPSILON };

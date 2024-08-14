@@ -128,7 +128,7 @@ const cameraEntity = {
 };
 
 
-const bloomEffect = new BloomEffect({ intensity: 0.0 });
+const bloomEffect = new BloomEffect({ intensity: 0.9 });
 const bloomPass = new EffectPass(mainCamera, bloomEffect);
 const fxaaPass = new EffectPass(mainCamera, new FXAAEffect());
 
@@ -144,10 +144,10 @@ const postProcessingEntity = {
 			pass: fxaaPass,
 			composer: composer,
 		},
-		// ssao: {
-		// 	type: "PassComponent",
-		// 	pass: new EffectPass(mainCamera, new SSAOEffect(mainCamera, mainScene)),
-		// },
+		//ssao: {
+		//	type: "PassComponent",
+		//	pass: new EffectPass(mainCamera, new SSAOEffect(mainCamera, mainScene)),
+		//},
 	},
 };
 
@@ -174,54 +174,6 @@ const skyEntity = {
 const me = new THREE.Mesh(nonIndexGeo, mat);
 nonIndexGeo.scale(10, 10, 10);
 
-// const exampleBoxEntity = {
-// 	c: {
-// 		meshFilter: {
-// 			type: "MeshFilter",
-// 			mesh: me,
-// 			scene: mainScene,
-// 		},
-// 		script: {
-// 			type: "Script",
-// 			script: new NewScript(),
-// 		},
-// 		transform: {
-// 			type: "Transform",
-// 			obj: me,
-// 		},
-// 		gui: {
-// 			type: "GUIcomponent",
-// 			list: [
-// 				{
-// 					path: [""],
-// 					guiType: "slider",
-// 					properityName: "x",
-// 					target: me.position,
-// 					max: 3,
-// 					min: -3,
-// 					step: 0.1,
-// 					name: "X-Axis",
-// 				},
-// 			],
-// 		},
-// 		script: {
-// 			type: "Script",
-// 			script: new NewScript(),
-// 		},
-// 		transform: {
-// 			type: "Transform",
-// 			obj: me,
-// 		},
-// 		rigidBody: {
-// 			type: "RigidBody",
-// 			geometry: nonIndexGeo,
-// 			mass: 55,
-// 			affectedByGravity: false,
-// 			drag: 0.5,
-// 			angularDrag:0.5
-// 		},
-// 	},
-// };
 
 const boat = await loadModel(boatModel);
 
