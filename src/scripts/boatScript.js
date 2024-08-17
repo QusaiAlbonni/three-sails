@@ -6,8 +6,8 @@ import { signedAngle, rotateVectorAroundAxis } from "../utils"
 
 class BoatBehavior extends Behavior {
 
-	headSailArea = 32;
-	mainSailArea = 40;
+	headSailArea = 20;
+	mainSailArea = 30;
 
 	mainSailCenter = new THREE.Vector3(0, 6, 0);
 	headSailCenter = new THREE.Vector3(0, 6, 1.5);
@@ -103,7 +103,7 @@ class BoatBehavior extends Behavior {
 					max: 100,
 					min: 1.0,
 					step: 0.5,
-					name: "Main Sail Area"
+					name: "Head Sail Area"
 
 				},
 			],
@@ -113,7 +113,6 @@ class BoatBehavior extends Behavior {
 		this.initCoeficients()
 
 		this.transform.position.y = 0.1
-		//this.transform.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2)
 		this.transform.updateMatrix()
 		this.transform.updateWorldMatrix(true, true)
 
@@ -156,7 +155,7 @@ class BoatBehavior extends Behavior {
 		this.keelHelper.position.copy(this.transform.position)
 		this.totalForceHelper.position.copy(this.transform.position)
 
-		
+
 		this.addSailForce(this.mainSailArea, this.mainSailCenterWorld, this.mainsail)
 		this.addSailForce(this.headSailArea, this.headSailCenterWorld, this.jib)
 		this.addKeelForce()
@@ -182,7 +181,6 @@ class BoatBehavior extends Behavior {
 		let liftCoeficient = this.getHeadSailLiftCoeficientAtAngle(sailAppraentAngleGrad)
 		let dragCoeficient = this.getHeadSailDragCoeficientAtAngle(sailAppraentAngleGrad)
 
-		console.log(this.body.velocity.length());
 		
 
 		let liftDirection = this.getLiftDirection(apparentWind, sailVector)
@@ -206,6 +204,8 @@ class BoatBehavior extends Behavior {
 	getLiftDirection(apparentWind, objVector) {
 		new THREE.Vector3().normalize
 		let angle = signedAngle(apparentWind.clone().normalize().multiplyScalar(-1), objVector.clone().normalize(), new THREE.Vector3(0, 1, 0));
+		angle += 180
+		console.log(angle);
 		if (Math.abs(angle) < 180) {
 			angle = -90 * Math.sign(angle)
 		}

@@ -245,7 +245,7 @@ const boatEntity = {
 		rigidBody: {
 		  type: "RigidBody",
 		  geometry: phyBoatNonIndGeo,
-		  mass: 8000,
+		  mass: 4000,
 		  affectedByGravity: true,
 		},
 		buoyantBody: {
@@ -256,7 +256,7 @@ const boatEntity = {
 			minimumWaterAngularDrag: 0.02,
 			minimumWaterDrag: 0.02,
 			fluidDensity: 1029,
-			volume: 20,
+			volume: 10,
 		},
 		script: {
 			type: "Script",
