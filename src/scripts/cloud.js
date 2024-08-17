@@ -1,6 +1,6 @@
 import Behavior from "./base";
 import * as THREE from "three";
-import cloudmodel from "../../assets/models/cloud/cloudtest.glb";
+import cloudmodel from "../../assets/models/cloud/clouds.glb";
 import { loadModel } from "../utils";
 
 class CloudBehavior extends Behavior {
@@ -52,7 +52,9 @@ class CloudBehavior extends Behavior {
 
         this.rain = new THREE.Points(this.raingeo, rainMaterial);
         this.fog = new THREE.FogExp2(0x1c1c2a, 0.002);
-        const originalCloud = await loadModel(cloudmodel, { x: 10, y: 6, z: 8 });
+
+        const originalCloud = await loadModel(cloudmodel, { x: 0.1,y: 0.1,z: 0.1,});
+
         for (let p = 0; p < 200; p++) {
             const cloud = originalCloud.clone();  
             cloud.position.set(
@@ -103,9 +105,7 @@ class CloudBehavior extends Behavior {
                 this.scene.remove(cloud);
             }
         }
-    }
-
-    update() {
+    }update() {
         if (this.winterEffectEnabled) {
             for (let p of this.cloudpartical) {
                 p.rotation.y -= 0.0005;
@@ -123,19 +123,6 @@ class CloudBehavior extends Behavior {
                 } else {
                     this.flash.power = 0;
                     this.flashIntensity = 0;
-                }
-            }
-    
-            for (let i = 0; i < this.cloudpartical.length; i++) {
-                this.glowTimers[i] -= 0.05;
-                if (this.glowTimers[i] <= 0) {
-                    const cloud = this.cloudpartical[i];
-                    cloud.traverse(node => {
-                        if (node.isMesh) {
-                            node.material.emissiveIntensity = this.flashIntensity * 0.007;  
-                        }
-                    });
-                    this.glowTimers[i] = Math.random() * 5;
                 }
             }
     

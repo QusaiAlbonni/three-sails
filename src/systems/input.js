@@ -123,18 +123,8 @@ class InputSystem extends System {
             }
             this._processKeyboard();
             this._pressKeyboard(timeElapsed);
-           
-            
         }
         _processKeyboard() {
-            // if (this.ppress) {
-            //     if (this.keyboard['d']) {
-            //         this.boat.rotation.y -= 0.01;
-            //     } else if (this.keyboard['a']) {
-            //         this.boat.rotation.y += 0.01;
-            //     }
-            // }
-    
             if(this.freelock){
                 if(this.keyboard['w']){
                     this.movementk = +0.5 ;
