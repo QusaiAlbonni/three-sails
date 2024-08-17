@@ -190,11 +190,11 @@ const island = await loadModel(islandModel,{x:1,y:1,z:1},{x:1,y:92,z:95});
 
 const islandEntity = {
 	c: {
-		meshFilter: {
-			type: "MeshFilter",
-			mesh: island,
-			scene: mainScene
-		},
+		// meshFilter: {
+		// 	type: "MeshFilter",
+		// 	mesh: island,
+		// 	scene: mainScene
+		// },
 	   
 	},
   };
@@ -202,19 +202,19 @@ const mountain = await loadModel(mountainModel,{x:0.1,y:0.1,z:0.1},{x:1,y:1,z:1}
 
 const mountainEntity = {
 	c: {
-		meshFilter: {
-			type: "MeshFilter",
-			mesh: mountain,
-			scene: mainScene
-		},
-		transform: {
-			type: "Transform",
-			obj: mountain,
-		},
-		script: {
-			type: "Script",
-			script: new MountainBehavior(),
-		  },
+		// meshFilter: {
+		// 	type: "MeshFilter",
+		// 	mesh: mountain,
+		// 	scene: mainScene
+		// },
+		// transform: {
+		// 	type: "Transform",
+		// 	obj: mountain,
+		// },
+		// script: {
+		// 	type: "Script",
+		// 	script: new MountainBehavior(),
+		//   },
 	   
 	},
   };
