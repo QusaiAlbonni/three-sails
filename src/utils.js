@@ -17,7 +17,7 @@ function signedAngle(vectorA, vectorB, axis) {
 function rotateVectorAroundAxis(vector, degree) {
     const quaternion = new THREE.Quaternion();
     quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(degree));
-    const rotatedVector = vector.clone().applyQuaternion(quaternion);
+    const rotatedVector = vector.clone().normalize().applyQuaternion(quaternion);
     return rotatedVector;
 }
 

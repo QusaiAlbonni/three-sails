@@ -21,6 +21,7 @@ import {
 } from "./scripts/behaviors";
 import boatModel from "../assets/models/boat/boat.glb";
 import phyBoatModel from "../assets/models/boat/boatphy.glb";
+import MainSailControls from "./scripts/mainsail";
 const renderer = new THREE.WebGLRenderer({
 	powerPreference: "high-performance",
 });
@@ -179,9 +180,15 @@ nonIndexGeo.scale(10, 10, 10);
 const boat = await loadModel(boatModel);
 
 var rudder;
+var jib;
+var mainsail;
 boat.traverse((obj) => {
 	if (obj.name === 'rudder')
 		rudder = obj
+	if (obj.name === 'jib')
+		jib = obj
+	if (obj.name === 'mainsail')
+		mainsail = obj
 })
 
 
@@ -238,19 +245,24 @@ const boatEntity = {
 		rigidBody: {
 		  type: "RigidBody",
 		  geometry: phyBoatNonIndGeo,
-		  mass: 10000,
+		  mass: 8000,
 		  affectedByGravity: true,
 		},
 		buoyantBody: {
 			type: "BuoyantBody",
 			voxelizedMesh: voxy,
 			water: water,
-			drawVoxels: true
+			drawVoxels: true,
+			minimumWaterAngularDrag: 0.02,
+			minimumWaterDrag: 0.02,
+			fluidDensity: 1029,
+			volume: 20,
 		},
 		script: {
 			type: "Script",
 			script: new BoatBehavior(water),
 		},
+		
 	},
 };
 
@@ -282,8 +294,16 @@ const amEntity = {
       },
       script: {
           type: "Script",
-          script: new Rudder(rudder),
+          script: new Rudder(rudder,60, -60, {x: 0, y:0, z:-3}),
       },
+	  script2: {
+          type: "Script",
+          script: new MainSailControls(mainsail, 80, -80, {x: 0, y:0, z:0}, 'KeyY', 'KeyU'),
+    	},
+		script3: {
+          type: "Script",
+          script: new MainSailControls(jib, 80, -80, {x: 0, y:0, z:0}, 'KeyZ', 'KeyX'),
+    	},
 	//   rigidBody: {
 	// 	type: 'RigidBody',
 	// 	geometry: rudder.geometry,

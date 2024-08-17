@@ -60,7 +60,7 @@ class BuoyancySystem extends System {
         let localVoxelHeight = bb.voxelizedMesh.voxelSize
 
         let voxelVolume = V / voxelCount
-        let forceDensityFactor = (fluidDensity - density) * voxelVolume
+        let forceDensityFactor = (fluidDensity) * voxelVolume
 
         for (let index = 0; index < voxelCount; index++) {
             let worldPos = voxels[index].position.clone();
