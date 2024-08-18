@@ -5,7 +5,7 @@ import * as THREE from 'three'
 
 class Rudder extends Behavior {
 
-    constructor(mesh, maxAngle = 60, minAngle = -60, offset = { x: 0, y: 0, z: 0 }, rightKey = 'KeyD', leftKey = 'KeyA') {
+    constructor(mesh, maxAngle = 45, minAngle = -45, offset = { x: 0, y: 0, z: 0 }, rightKey = 'KeyD', leftKey = 'KeyA') {
         super()
         this.mymesh = mesh
         this.maxAngle = maxAngle
@@ -87,5 +87,6 @@ class Rudder extends Behavior {
         }
     }
     update() {
+        
     }
 } export default Rudder;
