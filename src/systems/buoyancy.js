@@ -60,7 +60,7 @@ class BuoyancySystem extends System {
         let localVoxelHeight = bb.voxelizedMesh.voxelSize
 
         let voxelVolume = V / voxelCount
-        let forceDensityFactor = (fluidDensity) * voxelVolume
+        let forceDensityFactor = (fluidDensity - density) * voxelVolume
 
         for (let index = 0; index < voxelCount; index++) {
             let worldPos = voxels[index].position.clone();
@@ -82,11 +82,10 @@ class BuoyancySystem extends System {
         }
         submergedVolume = submergedVolume / voxelCount;
 
-        submergedVolume = Math.sqrt(submergedVolume)
-
-        rb.drag = lerp(bb.minimumWaterDrag, 1.0, submergedVolume);
-        rb.angularDrag = lerp(bb.minimumWaterAngularDrag, 1.0,  submergedVolume);        
-
+        if (bb.addDrag){
+            rb.drag = lerp(bb.minimumWaterDrag, 1.0, submergedVolume);
+            rb.angularDrag = lerp(bb.minimumWaterAngularDrag, 1.0,  submergedVolume);        
+        }
         bb.voxelizedMesh.voxelMesh.position.copy(rb.position);
         bb.voxelizedMesh.voxelMesh.quaternion.copy(rb.rotation);
     }

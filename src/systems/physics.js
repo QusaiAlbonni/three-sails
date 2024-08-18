@@ -333,8 +333,6 @@ class PhysicsSystem extends System {
             throw new RigidBodyDataError("Only Quaternion for rigidbody rotations is supported")
         }
 
-        rb.velocity = new THREE.Vector3();
-        rb.angularVelocity = new THREE.Vector3();
     }
 
     _tetraIntertiaProduct(x0, x1, x2, y0, y1, y2) {

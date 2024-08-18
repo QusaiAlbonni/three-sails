@@ -14,7 +14,8 @@ class BuoyantBody extends Component {
         water: null,
         drawVoxels: false,
         minimumWaterDrag: 0.1,
-        minimumWaterAngularDrag: 0.1
+        minimumWaterAngularDrag: 0.1,
+        addDrag: true,
     }
 }
 

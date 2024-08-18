@@ -106,4 +106,9 @@ function isInsideMesh(pos, mesh) {
     let rayCasterIntersects = rayCaster.intersectObject(mesh, false);
     return rayCasterIntersects.length % 2 === 1; 
 }
-export { crossMatrix, reorthogonalize, loadModel, loadFbxModel, isInsideMesh, signedAngle, rotateVectorAroundAxis, EPSILON };
+
+function isRotationExceedingAngle(object, axis = 'x', angle) {
+    const rotation = object.rotation[axis];
+    return Math.abs(rotation) > angle;
+}
+export { crossMatrix, reorthogonalize, loadModel, loadFbxModel, isInsideMesh, signedAngle, rotateVectorAroundAxis, isRotationExceedingAngle, EPSILON };

@@ -226,8 +226,9 @@ phyBoat.traverse(function (child) {
 	}
 });
 
-const voxy = new VoxelizedMesh(phyBoatVoxelMesh, 0.5, 0.5, {x: 0.0, y:0.0, z:0.0}, new THREE.MeshLambertMaterial({color: 0x00ff00}))
+const voxy = new VoxelizedMesh(phyBoatVoxelMesh, 0.5, 0.6, {x: 0.0, y:0.0, z:0.0}, new THREE.MeshLambertMaterial({color: 0x00ff00}))
 phyBoatVoxelMesh= voxy.voxelMesh
+//mainScene.add(phyBoatVoxelMesh)
 const phyBoatNonIndGeo = phyBoatIndGeo.toNonIndexed()
 boat.position.y=3;
 const boatEntity = {
@@ -245,7 +246,7 @@ const boatEntity = {
 		rigidBody: {
 		  type: "RigidBody",
 		  geometry: phyBoatNonIndGeo,
-		  mass: 4000,
+		  mass: 8000,
 		  affectedByGravity: true,
 		},
 		buoyantBody: {
@@ -256,7 +257,7 @@ const boatEntity = {
 			minimumWaterAngularDrag: 0.02,
 			minimumWaterDrag: 0.02,
 			fluidDensity: 1029,
-			volume: 10,
+			volume: 23,
 		},
 		script: {
 			type: "Script",

@@ -1,17 +1,18 @@
-import { step } from "three/examples/jsm/nodes/Nodes.js";
 import Behavior from "./base";
 import * as THREE from "three";
 import { wind } from "../wind";
-import { signedAngle, rotateVectorAroundAxis } from "../utils"
+import { signedAngle, rotateVectorAroundAxis, isRotationExceedingAngle } from "../utils"
 
 class BoatBehavior extends Behavior {
 
-	headSailArea = 20;
-	mainSailArea = 30;
+	headSailArea = 30;
+	mainSailArea = 40;
 
-	mainSailCenter = new THREE.Vector3(0, 6, 0);
-	headSailCenter = new THREE.Vector3(0, 6, 1.5);
-	keelCenter     = new THREE.Vector3(0, -1, 0)
+	mainSailCenter = new THREE.Vector3(0, 0.5, 0);
+	headSailCenter = new THREE.Vector3(0, 0.5, 0.1);
+	keelCenter     = new THREE.Vector3(0, -0.2, 0.1);
+	underWaterVolume= 6
+	boatLength = 6
 
 	windVector = new THREE.Vector3()
 
@@ -23,6 +24,11 @@ class BoatBehavior extends Behavior {
 	}
 
 	start() {
+
+		console.log(this.body);
+		
+		let velocity = this.body.velocity
+		
 		this.transform.position.y = 0.2
 		this.entity.addComponent({
 			type: 'GUIcomponent',
@@ -79,7 +85,7 @@ class BoatBehavior extends Behavior {
 					properityName: "speed",
 					target: wind,
 					max: 200,
-					min: 1.0,
+					min: 0.0,
 					step: 0.5,
 					name: "Wind Speed"
 
@@ -106,6 +112,45 @@ class BoatBehavior extends Behavior {
 					name: "Head Sail Area"
 
 				},
+				{
+					path: ["boat", "Rigid Body", "v"],
+					guiType: "vector",
+					properityName: "velocity",
+					target: velocity,
+					name: "v",
+					min: {
+						x: 0.0,
+						y: 0.0,
+						z: 0.0,
+					},
+					max: {
+						x:100.0,
+						y:100.0,
+						z:100.0,
+					},
+					step: {
+						x: 0.1,
+						y:0.1,
+						z:0.1,
+					},
+					name: {
+						x: "x",
+						y: "y",
+						z: "z"
+					}
+
+				},
+				{
+					path: ["wind"],
+					guiType: "slider",
+					properityName: "airDensity",
+					target: this,
+					max: 100,
+					min: 0.1,
+					step: 0.01,
+					name: "Air Density"
+
+				},
 			],
 		})
 
@@ -114,11 +159,7 @@ class BoatBehavior extends Behavior {
 
 		this.transform.position.y = 0.1
 		this.transform.updateMatrix()
-		this.transform.updateWorldMatrix(true, true)
-
-		let ss = new THREE.Vector3(0, 0, 3);
-		ss = this.transform.localToWorld(ss)
-		
+		this.transform.updateWorldMatrix(true, true)		
 
 		this.mesh.traverse(((obj) => {
 			if (obj.name === 'rudder')
@@ -159,15 +200,18 @@ class BoatBehavior extends Behavior {
 		this.addSailForce(this.mainSailArea, this.mainSailCenterWorld, this.mainsail)
 		this.addSailForce(this.headSailArea, this.headSailCenterWorld, this.jib)
 		this.addKeelForce()
-		this.body.addTorque(new THREE.Vector3(0, 0, this.body.totalForce.z))
+
+
+		console.log(this.body.velocity.length());
+		
 		
 		let helperDirection = this.body.totalForce.clone()
 		helperDirection.y = 0
 		helperDirection.normalize()
 		this.totalForceHelper.setDirection(helperDirection)
-
-		let ss = new THREE.Vector3(0, 0, 3);
-		ss = this.transform.localToWorld(ss)
+		
+		if (isRotationExceedingAngle(this.mesh, 'x', Math.PI / 2) || isRotationExceedingAngle(this.mesh, 'y', Math.PI / 2) || isRotationExceedingAngle(this.mesh, 'z', Math.PI / 2))
+			this.body.mass += 100
 
 		
 	}
@@ -188,7 +232,7 @@ class BoatBehavior extends Behavior {
 		let Fd = apparentWind.clone().normalize().multiplyScalar(this.sailForce(dragCoeficient, windVelocity, sailArea))
 		let F = Fl.clone().add(Fd)
 		
-		this.body.addForce(F, forcePos)
+		this.body.addForceAtPosition(F, forcePos)
 	}
 
 	addKeelForce() {
@@ -198,14 +242,14 @@ class BoatBehavior extends Behavior {
 		let direction = rotateVectorAroundAxis(this.body.velocity, angle)
 		let Fk = direction.clone().multiplyScalar(2 * cos * cos * this.waterDensity)
 		this.keelHelper.setDirection(Fk.clone().normalize())
-		this.body.addForce(Fk, this.keelCenterWorld)
+		this.body.addForceAtPosition(Fk, this.keelCenterWorld)
 	}
+
 
 	getLiftDirection(apparentWind, objVector) {
 		new THREE.Vector3().normalize
 		let angle = signedAngle(apparentWind.clone().normalize().multiplyScalar(-1), objVector.clone().normalize(), new THREE.Vector3(0, 1, 0));
 		angle += 180
-		console.log(angle);
 		if (Math.abs(angle) < 180) {
 			angle = -90 * Math.sign(angle)
 		}
@@ -219,6 +263,36 @@ class BoatBehavior extends Behavior {
 
 	sailForce(C, v, A) {
 		return 0.5 * this.airDensity * v * v * A * C
+	}
+
+
+	addHullDrag(){
+		let speed = this.body.velocity.clone().dot(this.transform.rightVector)
+		let Cd = 0.25
+		let factor = speed * speed * Cd * this.waterDensity
+		factor = -factor
+		let force = this.body.velocity.clone().normalize().multiplyScalar(factor)
+		this.body.addForce(force)
+		let torque = this.body.angularVelocity.clone().normalize().multiplyScalar(factor)
+		this.body.addTorque(torque)	
+	}
+
+	addFricionalResistence(){
+		let Cf = 0.004
+		let S = 2.6 * Math.sqrt(this.underWaterVolume * this.boatLength);
+		let Ffr = 0.5 * this.waterDensity * Math.pow(this.body.velocity.length(), 2) * S * Cf;
+		this.body.addForce(this.body.velocity.clone().normalize().multiplyScalar(-1 * Ffr))
+		let torque = this.body.angularVelocity.clone().normalize().multiplyScalar(-1 * Ffr)
+		this.body.addTorque(torque)	
+	}
+
+	addResidualForce() {
+        // Fr = 1/2 * rho * V * V * S * Cr
+        let Cr = 2 * Math.exp(-3);
+        let Fr = 0.5 * this.waterDensity * Math.pow(this.body.velocity.length(), 2) * Cr;
+		this.body.addForce(this.body.velocity.clone().normalize().multiplyScalar(-1 * Fr))
+		let torque = this.body.angularVelocity.clone().normalize().multiplyScalar(-1 * Fr)
+		this.body.addTorque(torque)	
 	}
 
 
