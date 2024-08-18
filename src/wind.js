@@ -1,3 +1,5 @@
+import * as THREE from 'three'
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const angleDisplay = document.getElementById("angleDisplay");
@@ -9,7 +11,18 @@ canvas.height = 100;
 const radius = canvas.width / 2 - 10;
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
-let angle = 0;
+
+var angleObj = {
+  angle: 0
+}
+
+var wind = {
+  angle: 3.14,
+  speed: 10,
+  getWindVector(){
+    return new THREE.Vector3(Math.cos(this.angle), 0, Math.sin(this.angle)).multiplyScalar(this.speed)
+  },
+}
 
 function drawCircle() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -19,8 +32,8 @@ function drawCircle() {
   ctx.lineWidth = 3;
   ctx.stroke();
 
-  const handleX = centerX + radius * Math.cos(angle);
-  const handleY = centerY + radius * Math.sin(angle);
+  const handleX = centerX + radius * Math.cos(angleObj.angle);
+  const handleY = centerY + radius * Math.sin(angleObj.angle);
   ctx.beginPath();
   ctx.arc(handleX, handleY, 5, 0, 2 * Math.PI); 
   ctx.fillStyle = "#ff8800";
@@ -43,13 +56,13 @@ function calculateAngle(pos) {
 
 canvas.addEventListener("mousedown", function (event) {
   const pos = getMousePos(event);
-  angle = calculateAngle(pos);
+  angleObj.angle = calculateAngle(pos);
   drawCircle();
   updateAngleDisplay();
 
   function onMouseMove(event) {
     const pos = getMousePos(event);
-    angle = calculateAngle(pos);
+    angleObj.angle = calculateAngle(pos);
     drawCircle();
     updateAngleDisplay();
   }
@@ -64,10 +77,17 @@ canvas.addEventListener("mousedown", function (event) {
 });
 
 function updateAngleDisplay() {
-  const degrees = (angle * (180 / Math.PI) + 360) % 360;
+  const degrees = (angleObj.angle * (180 / Math.PI) + 360) % 360;
   let finalAngle = 360 - degrees;
+  let radians = degreesToRadians(finalAngle);
+  wind.angle = radians;
   angleDisplay.innerText = `${finalAngle.toFixed(2)}°`;
+}
+
+function degreesToRadians(degrees) {
+  return degrees * (Math.PI / 180);
 }
 
 drawCircle();
 
+export { wind }

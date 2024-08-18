@@ -173,10 +173,10 @@ class PhysicsSystem extends System {
 
         // current inverse inertia tensor of body I^-1 = Rotation * I0^-1 Rotation^T
         let RI = new THREE.Matrix3();
-        RI.multiplyMatrices(rotation, body.initialInvInertia);
+        RI.multiplyMatrices(rotation, body.initialInertiaTensor);
         let RTranspose = rotation.clone().transpose();
         let RIRt = new THREE.Matrix3();
-        RIRt.multiplyMatrices(RI, RTranspose);
+        RIRt.multiplyMatrices(RI, RTranspose).invert();
         body.invInertia.copy(RIRt);
 
         // Angular acceleration Alpha = T / I = T * I^-1
@@ -193,15 +193,20 @@ class PhysicsSystem extends System {
 
         // update the body quaternion
         // dq/dt = omega * dt * 0.5
-        body.rotation.multiply(this.deltaRotationAppx1(omega, dt));
-        body.rotation.normalize()
+        let quat = this.deltaRotationAppx2(omega, dt).multiply(body.rotation)
+        body.rotation.copy(quat)
     }
 
     deltaRotationAppx1(em, deltaTime) {
         let ha = em.clone().multiplyScalar(deltaTime * 0.5);
         return new THREE.Quaternion(ha.x, ha.y, ha.z, 1.0);
     }
-
+    /**
+     * 
+     * @param {*} em 
+     * @param {*} deltaTime 
+     * @returns {THREE.Quaternion}
+     */
     deltaRotationAppx2(em, deltaTime) {
         let ha = em.clone().multiplyScalar(deltaTime * 0.5);
         let l = ha.length()

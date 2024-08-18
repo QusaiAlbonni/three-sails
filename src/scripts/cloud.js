@@ -55,7 +55,7 @@ class CloudBehavior extends Behavior {
 
         const originalCloud = await loadModel(cloudmodel, { x: 0.1,y: 0.1,z: 0.1,});
 
-        for (let p = 0; p < 200; p++) {
+        for (let p = 0; p < 250; p++) {
             const cloud = originalCloud.clone();  
             cloud.position.set(
                 getRandomBetween(1000, -1000),

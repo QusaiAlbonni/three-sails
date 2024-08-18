@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import Rudder from "./scripts/rudder";
 import {
 	EffectComposer,
 	BloomEffect,
@@ -23,7 +24,9 @@ import {
 import boatModel from "../assets/models/boat/boat.glb";
 import islandModel from "../assets/models/extra/untitled4.glb";
 import mountainModel from "../assets/models/extra/mountain.glb";
+import beaconModel from "../assets/models/extra/beacon.glb";
 import phyBoatModel from "../assets/models/boat/boatphy.glb";
+import MainSailControls from "./scripts/mainsail";
 const renderer = new THREE.WebGLRenderer({
 	powerPreference: "high-performance",
 });
@@ -132,7 +135,7 @@ const cameraEntity = {
 };
 
 
-const bloomEffect = new BloomEffect({ intensity: 0.0 });
+const bloomEffect = new BloomEffect({ intensity: 0.9 });
 const bloomPass = new EffectPass(mainCamera, bloomEffect);
 const fxaaPass = new EffectPass(mainCamera, new FXAAEffect());
 
@@ -148,10 +151,10 @@ const postProcessingEntity = {
 			pass: fxaaPass,
 			composer: composer,
 		},
-		// ssao: {
-		// 	type: "PassComponent",
-		// 	pass: new EffectPass(mainCamera, new SSAOEffect(mainCamera, mainScene)),
-		// },
+		//ssao: {
+		//	type: "PassComponent",
+		//	pass: new EffectPass(mainCamera, new SSAOEffect(mainCamera, mainScene)),
+		//},
 	},
 };
 
@@ -186,96 +189,56 @@ const cloudEntity = {
 	  },
 	},
   };
-const island = await loadModel(islandModel,{x:1,y:1,z:1},{x:1,y:92,z:95});
 
-const islandEntity = {
+const island = await loadModel(islandModel,{x:1,y:1,z:1},{x:1,y:92,z:1});
+
+ const islandEntity = {
 	c: {
-		// meshFilter: {
-		// 	type: "MeshFilter",
-		// 	mesh: island,
-		// 	scene: mainScene
-		// },
+		meshFilter: {
+			type: "MeshFilter",
+			mesh: island,
+			scene: mainScene
+		},
 	   
 	},
-  };
+   };
 const mountain = await loadModel(mountainModel,{x:0.1,y:0.1,z:0.1},{x:1,y:1,z:1});
 
 const mountainEntity = {
+
 	c: {
-		// meshFilter: {
-		// 	type: "MeshFilter",
-		// 	mesh: mountain,
-		// 	scene: mainScene
-		// },
-		// transform: {
-		// 	type: "Transform",
-		// 	obj: mountain,
-		// },
-		// script: {
-		// 	type: "Script",
-		// 	script: new MountainBehavior(),
-		//   },
+		meshFilter: {
+			type: "MeshFilter",
+			mesh: mountain,
+			scene: mainScene
+		},
+		transform: {
+			type: "Transform",
+			obj: mountain,
+		},
+		script: {
+			type: "Script",
+			script: new MountainBehavior(),
+		  },
 	   
 	},
   };
 const me = new THREE.Mesh(nonIndexGeo, mat);
 nonIndexGeo.scale(10, 10, 10);
 
-// const exampleBoxEntity = {
-// 	c: {
-// 		meshFilter: {
-// 			type: "MeshFilter",
-// 			mesh: me,
-// 			scene: mainScene,
-// 		},
-// 		script: {
-// 			type: "Script",
-// 			script: new NewScript(),
-// 		},
-// 		transform: {
-// 			type: "Transform",
-// 			obj: me,
-// 		},
-// 		gui: {
-// 			type: "GUIcomponent",
-// 			list: [
-// 				{
-// 					path: [""],
-// 					guiType: "slider",
-// 					properityName: "x",
-// 					target: me.position,
-// 					max: 3,
-// 					min: -3,
-// 					step: 0.1,
-// 					name: "X-Axis",
-// 				},
-// 			],
-// 		},
-// 		script: {
-// 			type: "Script",
-// 			script: new NewScript(),
-// 		},
-// 		transform: {
-// 			type: "Transform",
-// 			obj: me,
-// 		},
-// 		rigidBody: {
-// 			type: "RigidBody",
-// 			geometry: nonIndexGeo,
-// 			mass: 55,
-// 			affectedByGravity: false,
-// 			drag: 0.5,
-// 			angularDrag:0.5
-// 		},
-// 	},
-// };
 
 const boat = await loadModel(boatModel);
 const boatlight=new THREE.SpotLight(0xffffff,0);
 var rudder;
+var jib;
+var mainsail;
 boat.traverse((obj) => {
 	if (obj.name === 'rudder')
 		rudder = obj
+	if (obj.name === 'jib')
+		jib = obj
+	if (obj.name === 'mainsail')
+		mainsail = obj
 })
 
 
@@ -297,7 +260,54 @@ const waterEntity = {
 		}
 	}
 };
-
+const beacons=await loadModel(beaconModel,{x:1,y:1,z:1},{x:1,y:1,z:1});
+var beaconIndGeo;
+var beaconVoxelMesh;
+beacons.traverse(function (child) {
+	if (child.isMesh) {
+		const geometry = child.geometry;
+		const material = child.material;
+		console.log(geometry);
+		console.log('Number of vertices:', geometry.attributes.position.count);
+		beaconIndGeo = geometry;
+		beaconVoxelMesh = child
+	}
+});
+const voxy2 = new VoxelizedMesh(beaconVoxelMesh, 0.5, 0.5, {x: 0.0, y:0.0, z:0.0}, new THREE.MeshLambertMaterial({color: 0x00ff00}))
+beaconVoxelMesh= voxy2.voxelMesh
+// mainScene.add(beaconVoxelMesh);
+const beaconNonIndGeo = beaconIndGeo.toNonIndexed()
+beacons.position.y=3;
+ const beaconEntity={
+	c: {
+		meshFilter: {
+			type: "MeshFilter",
+			mesh: beacons,
+			scene: mainScene,
+		},
+		// transform: {
+		// 	type: "Transform",
+		// 	obj: beacons,
+		// },
+		rigidBody: {
+		  type: "RigidBody",
+		  geometry: beaconNonIndGeo,
+		  mass: 1000,
+		  affectedByGravity: true,
+		},
+		buoyantBody: {
+			type: "BuoyantBody",
+			voxelizedMesh: voxy2,
+			water: water,
+			drawVoxels: true,
+			minimumWaterAngularDrag: 0.02,
+			minimumWaterDrag: 0.02,
+			fluidDensity: 1029,
+			volume: 20,
+		},
+		
+	},
+ };
 
 const phyBoat = await loadModel(phyBoatModel);
 var phyBoatIndGeo;
@@ -316,7 +326,7 @@ phyBoat.traverse(function (child) {
 const voxy = new VoxelizedMesh(phyBoatVoxelMesh, 0.5, 0.5, {x: 0.0, y:0.0, z:0.0}, new THREE.MeshLambertMaterial({color: 0x00ff00}))
 phyBoatVoxelMesh= voxy.voxelMesh
 const phyBoatNonIndGeo = phyBoatIndGeo.toNonIndexed()
-
+boat.position.y=3;
 const boatEntity = {
 	tags: ["objectToBeFollowed"],
 	c: {
@@ -333,19 +343,24 @@ const boatEntity = {
 		rigidBody: {
 		  type: "RigidBody",
 		  geometry: phyBoatNonIndGeo,
-		  mass: 10000,
+		  mass: 8000,
 		  affectedByGravity: true,
 		},
 		buoyantBody: {
 			type: "BuoyantBody",
 			voxelizedMesh: voxy,
 			water: water,
-			drawVoxels: true
+			drawVoxels: true,
+			minimumWaterAngularDrag: 0.02,
+			minimumWaterDrag: 0.02,
+			fluidDensity: 1029,
+			volume: 20,
 		},
 		script: {
 			type: "Script",
 			script: new BoatBehavior(water),
 		},
+		
 	},
 };
 
@@ -363,7 +378,27 @@ const invisibleMeshEntitiy = {
 		}
 	}
 }
-
+rudder.geometry.translate(0,0,3)
+const mixedEntity = {
+  c: {
+      transform: {
+          type: "Transform",
+          obj: rudder,
+      },
+      script: {
+          type: "Script",
+          script: new Rudder(rudder,45, -45, {x: 0, y:0, z:-3}),
+      },
+	  script2: {
+          type: "Script",
+          script: new MainSailControls(mainsail, 80, -80, {x: 0, y:0, z:0}, 'KeyY', 'KeyU'),
+    	},
+		script3: {
+          type: "Script",
+          script: new MainSailControls(jib, 80, -80, {x: 0, y:0, z:0}, 'KeyZ', 'KeyX'),
+    	},
+    }
+  };
 const entities = [
 	gameRenderEntity,
 	boxEntity,
@@ -372,10 +407,12 @@ const entities = [
 	skyEntity,
 	waterEntity,
 	boatEntity,
+	mixedEntity,
 	invisibleMeshEntitiy,
 	cloudEntity,
 	islandEntity,
-	mountainEntity
+	mountainEntity,
+	beaconEntity
 ];
 
 export { entities };

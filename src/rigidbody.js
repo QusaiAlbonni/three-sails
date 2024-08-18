@@ -34,7 +34,7 @@ class RigidBody extends Component {
     }
 
     addForce(force) {
-        if (force.length() < EPSILON) {
+        if (force.length() < EPSILON || force.length() > 1e6) {
             return
         }
         this.totalForce.add(force);
@@ -47,7 +47,7 @@ class RigidBody extends Component {
      * @returns 
      */
     addForceAtPosition(force, position) {
-        if (force.length() < EPSILON)
+        if (force.length() < EPSILON || force.length() > 1e6)
             return
         this.totalForce.add(force);
         let arm = position.clone().sub(this.position.clone());
@@ -57,7 +57,7 @@ class RigidBody extends Component {
         this.totalTorque.add(torque);
     }
     addTorqueFromForce(force, position) {
-        if (force.length() < EPSILON)
+        if (force.length() < EPSILON || force.length() > 1e6)
             return
         let arm = position.clone().sub(this.position.clone());
         let torque = new Vector3().crossVectors(arm, force)
@@ -66,7 +66,7 @@ class RigidBody extends Component {
         this.totalTorque.add(torque);
     }
     addTorque(torque){
-        if(torque.length() < EPSILON)
+        if(torque.length() < EPSILON || torque.length() > 1e6)
             return
         this.totalTorque.add(torque);
     }

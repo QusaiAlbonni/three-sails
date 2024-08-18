@@ -13,8 +13,8 @@ class Water extends BatchedMesh {
             timeDilation: 1,
             timeOffset: 3,
             numOfWaves: 18,
-            startingWaveLength: 26,
-            startingAmplitude: 0.12,
+            startingWaveLength: 7,
+            startingAmplitude: 0.035,
             startingSpeed: 0.002,
             directionRandomSeed: 187,
             dirSeedIterator: -183.215,
@@ -40,7 +40,7 @@ class Water extends BatchedMesh {
             FRESNEL_STYLIZE: false,
             gravityConstant: 9.807,
             minDistanceToWave: 0.01,
-            maxDistanceToWave: 1000,
+            maxDistanceToWave: 400,
             maxHeightMultiplier: 4,
             objectToBeFollowed: objectToBeFollowed == undefined ? new THREE.Object3D(): objectToBeFollowed,
             chunkNum: 8,
@@ -95,7 +95,7 @@ class Water extends BatchedMesh {
             dirSeed += this.settings.dirSeedIterator;
 
         }
-        this.settings.planeVerts = Math.min(Math.ceil(this.settings.planeSize / (this.settings.waveLengths[this.settings.waveLengths.length - 1])), 600);
+        this.settings.planeVerts = Math.min(Math.ceil(this.settings.planeSize / (this.settings.waveLengths[this.settings.waveLengths.length - 1])), 550);
         this.updateMaxHeight();
     }
     updateMaxHeight() {

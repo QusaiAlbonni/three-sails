@@ -3,8 +3,8 @@ import * as THREE from 'three'
 
 class BoxBehavior extends Behavior{
     start(){
-        this.transform.position.x = -26
-        this.transform.position.y = 4;
+        this.transform.position.x = 0
+        this.transform.position.y = -10;
     }
 
     fixedUpdate(){
