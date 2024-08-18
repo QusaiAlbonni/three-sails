@@ -14,6 +14,7 @@ class MeshFilter extends Component {
   static properties = {
     mesh: new Mesh(),
     scene: undefined,
+    light: undefined,
   };
   preDestroy() {
     if (this.scene !== undefined) this.scene.remove(this.mesh);

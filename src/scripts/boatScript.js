@@ -103,7 +103,7 @@ class BoatBehavior extends Behavior {
 					max: 100,
 					min: 1.0,
 					step: 0.5,
-					name: "Main Sail Area"
+					name: "Head Sail Area"
 
 				},
 			],
