@@ -18,7 +18,7 @@ var angleObj = {
 
 var wind = {
   angle: 1.3,
-  speed: 10,
+  speed: 13,
   getWindVector(){
     return new THREE.Vector3(Math.cos(this.angle), 0, Math.sin(this.angle)).multiplyScalar(this.speed)
   },

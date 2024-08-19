@@ -135,7 +135,7 @@ const cameraEntity = {
 };
 
 
-const bloomEffect = new BloomEffect({ intensity: 0.9 });
+const bloomEffect = new BloomEffect({ intensity: 0.4 });
 const bloomPass = new EffectPass(mainCamera, bloomEffect);
 const fxaaPass = new EffectPass(mainCamera, new FXAAEffect());
 
@@ -275,7 +275,7 @@ beacons.traverse(function (child) {
 });
 const voxy2 = new VoxelizedMesh(beaconVoxelMesh, 0.5, 0.5, {x: 0.0, y:0.0, z:0.0}, new THREE.MeshLambertMaterial({color: 0x00ff00}))
 beaconVoxelMesh= voxy2.voxelMesh
-// mainScene.add(beaconVoxelMesh);
+mainScene.add(beaconVoxelMesh);
 const beaconNonIndGeo = beaconIndGeo.toNonIndexed()
 beacons.position.y=3;
  const beaconEntity={
@@ -285,14 +285,14 @@ beacons.position.y=3;
 			mesh: beacons,
 			scene: mainScene,
 		},
-		// transform: {
-		// 	type: "Transform",
-		// 	obj: beacons,
-		// },
+		 transform: {
+		 	type: "Transform",
+		 	obj: beacons,
+		 },
 		rigidBody: {
 		  type: "RigidBody",
-		  geometry: beaconNonIndGeo,
-		  mass: 1000,
+		  geometry: nonIndexGeo,
+		  mass: 10000,
 		  affectedByGravity: true,
 		},
 		buoyantBody: {

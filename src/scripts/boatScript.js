@@ -5,8 +5,8 @@ import { signedAngle, rotateVectorAroundAxis, isRotationExceedingAngle } from ".
 
 class BoatBehavior extends Behavior {
 
-	headSailArea = 30;
-	mainSailArea = 40;
+	headSailArea = 20;
+	mainSailArea = 30;
 
 	mainSailCenter = new THREE.Vector3(0, 0.5, 0);
 	headSailCenter = new THREE.Vector3(0, 0.5, 0.1);

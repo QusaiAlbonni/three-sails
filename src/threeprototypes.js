@@ -2,10 +2,10 @@ import { Object3D, Vector3, Quaternion } from "three";
 
 
 function alterThreeObjects(){
-   addTransformMethods(Object3D)
+   addTransformMethods()
 }
 
-function addTransformMethods(klass){
+function addTransformMethods(){
     Object.defineProperty(Object3D.prototype, 'forwardVector', {
         get: function() {
           const forward = new Vector3(0, 0, 1);

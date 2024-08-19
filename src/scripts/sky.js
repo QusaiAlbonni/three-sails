@@ -22,11 +22,11 @@ class SkyBehavior extends Behavior {
         this.moonPos.setFromSphericalCoords(1, moonPhi, moonTheta);
 
         this.daySettings = {
-            turbidity: 0.5,
+            turbidity: 0.8,
             rayleigh: 0.5,
             mieCoefficient: 0.005,
-            mieDirectionalG: 0.87,
-            lightColor: 0x9999ff,
+            mieDirectionalG: 0.99,
+            lightColor: 0xddff99,
             lightIntensity: 1.5,
             ambientColor: 0xffffff,
             ambientIntensity: 0.5,

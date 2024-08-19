@@ -54,7 +54,6 @@ class RenderSystem extends System {
         this.mainCamera = this.mainCameraQuery.refresh().execute().values().next().value.getOne('CameraComponent').camera;
         this.renderPass.mainCamera = this.mainCamera;
         this.renderPass.mainScene = this.mainScene;
-
         this.stats.update()
         this.composer.render();
     }
@@ -80,11 +79,11 @@ class RenderSystem extends System {
     _initRenderPass(composer) {
         this.renderPass = new RenderPass(this.mainScene, this.mainCamera);
         composer.addPass(this.renderPass);
-        const toneMappingEffect = new ToneMappingEffect({
-            mode: THREE.ACESFilmicToneMapping,
-        });
-        const toneMappingPass = new EffectPass(this.mainCamera, toneMappingEffect);
-        composer.addPass(toneMappingPass);
+        // const toneMappingEffect = new ToneMappingEffect({
+        //     mode: THREE.ACESFilmicToneMapping,
+        // });
+        // const toneMappingPass = new EffectPass(this.mainCamera, toneMappingEffect);
+        //composer.addPass(toneMappingPass);
     }
 
     _onWindowResize() {
