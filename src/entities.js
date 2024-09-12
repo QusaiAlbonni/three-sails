@@ -22,9 +22,6 @@ import {
 	MountainBehavior,
 } from "./scripts/behaviors";
 import boatModel from "../assets/models/boat/boat.glb";
-import islandModel from "../assets/models/extra/untitled4.glb";
-import mountainModel from "../assets/models/extra/mountain.glb";
-import beaconModel from "../assets/models/extra/beacon.glb";
 import phyBoatModel from "../assets/models/boat/boatphy.glb";
 import MainSailControls from "./scripts/mainsail";
 const renderer = new THREE.WebGLRenderer({
@@ -223,54 +220,7 @@ const waterEntity = {
 		}
 	}
 };
-const beacons=await loadModel(beaconModel,{x:1,y:1,z:1},{x:1,y:1,z:1});
-var beaconIndGeo;
-var beaconVoxelMesh;
-beacons.traverse(function (child) {
-	if (child.isMesh) {
-		const geometry = child.geometry;
-		const material = child.material;
-		console.log(geometry);
-		console.log('Number of vertices:', geometry.attributes.position.count);
-		beaconIndGeo = geometry;
-		beaconVoxelMesh = child
-	}
-});
-const voxy2 = new VoxelizedMesh(beaconVoxelMesh, 0.5, 0.5, {x: 0.0, y:0.0, z:0.0}, new THREE.MeshLambertMaterial({color: 0x00ff00}))
-beaconVoxelMesh= voxy2.voxelMesh
-mainScene.add(beaconVoxelMesh);
-const beaconNonIndGeo = beaconIndGeo.toNonIndexed()
-beacons.position.y=3;
- const beaconEntity={
-	c: {
-		meshFilter: {
-			type: "MeshFilter",
-			mesh: beacons,
-			scene: mainScene,
-		},
-		 transform: {
-		 	type: "Transform",
-		 	obj: beacons,
-		 },
-		rigidBody: {
-		  type: "RigidBody",
-		  geometry: nonIndexGeo,
-		  mass: 10000,
-		  affectedByGravity: true,
-		},
-		buoyantBody: {
-			type: "BuoyantBody",
-			voxelizedMesh: voxy2,
-			water: water,
-			drawVoxels: true,
-			minimumWaterAngularDrag: 0.02,
-			minimumWaterDrag: 0.02,
-			fluidDensity: 1029,
-			volume: 20,
-		},
-		
-	},
- };
+
 
 const phyBoat = await loadModel(phyBoatModel);
 var phyBoatIndGeo;
@@ -374,7 +324,6 @@ const entities = [
 	mixedEntity,
 	invisibleMeshEntitiy,
 	cloudEntity,
-	beaconEntity
 ];
 
 export { entities };
