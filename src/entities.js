@@ -141,20 +141,15 @@ const fxaaPass = new EffectPass(mainCamera, new FXAAEffect());
 
 const postProcessingEntity = {
 	c: {
-		bloom: {
-			type: "PassComponent",
-			pass: bloomPass,
-			composer: composer,
-		},
 		fxaa: {
 			type: "PassComponent",
 			pass: fxaaPass,
 			composer: composer,
 		},
-		//ssao: {
-		//	type: "PassComponent",
-		//	pass: new EffectPass(mainCamera, new SSAOEffect(mainCamera, mainScene)),
-		//},
+		ssao: {
+			type: "PassComponent",
+			pass: new EffectPass(mainCamera, new SSAOEffect(mainCamera, mainScene)),
+		},
 	},
 };
 
@@ -190,39 +185,7 @@ const cloudEntity = {
 	},
   };
 
-const island = await loadModel(islandModel,{x:1,y:1,z:1},{x:1,y:92,z:1});
 
- const islandEntity = {
-	c: {
-		meshFilter: {
-			type: "MeshFilter",
-			mesh: island,
-			scene: mainScene
-		},
-	   
-	},
-   };
-const mountain = await loadModel(mountainModel,{x:0.1,y:0.1,z:0.1},{x:1,y:1,z:1});
-
-const mountainEntity = {
-
-	c: {
-		meshFilter: {
-			type: "MeshFilter",
-			mesh: mountain,
-			scene: mainScene
-		},
-		transform: {
-			type: "Transform",
-			obj: mountain,
-		},
-		script: {
-			type: "Script",
-			script: new MountainBehavior(),
-		  },
-	   
-	},
-  };
 const me = new THREE.Mesh(nonIndexGeo, mat);
 nonIndexGeo.scale(10, 10, 10);
 
@@ -411,8 +374,6 @@ const entities = [
 	mixedEntity,
 	invisibleMeshEntitiy,
 	cloudEntity,
-	islandEntity,
-	mountainEntity,
 	beaconEntity
 ];
 
